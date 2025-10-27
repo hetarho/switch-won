@@ -1,0 +1,12 @@
+# Cypress 실행 결과물
+screenshots/
+videos/
+downloads/
+
+# Cucumber 리포트
+cucumber-json/
+cucumber-report.json
+
+# 로그
+*.log
+
