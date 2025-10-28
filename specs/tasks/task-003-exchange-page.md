@@ -211,8 +211,8 @@
 
 ```tsx
 <div className="bg-surface-invert rounded-xl p-6 shadow-lg border border-border-primary">
-  <p className="text-sm text-text-secondary">총 보유 자산</p>
-  <p className="text-3xl font-bold text-text-primary mt-2">₩ 3,000,000</p>
+  <p className="text-sm text-text-invert opacity-80">총 보유 자산</p>
+  <p className="text-3xl font-bold text-text-invert mt-2">₩ 3,000,000</p>
 </div>
 ```
 
@@ -523,8 +523,8 @@ export function ExchangePage() {
 
             {/* 총 보유 자산 */}
             <div className="bg-surface-invert rounded-xl p-6 shadow-lg border border-border-primary">
-              <p className="text-sm text-text-secondary">총 보유 자산</p>
-              <p className="text-3xl font-bold text-text-primary mt-2">₩ 3,000,000</p>
+              <p className="text-sm text-text-invert opacity-80">총 보유 자산</p>
+              <p className="text-3xl font-bold text-text-invert mt-2">₩ 3,000,000</p>
             </div>
           </aside>
 
