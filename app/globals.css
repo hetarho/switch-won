@@ -28,4 +28,9 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
+
+  /* Z-index values */
+  .z-sticky {
+    z-index: 1020;
+  }
 }
