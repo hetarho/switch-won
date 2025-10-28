@@ -241,56 +241,245 @@ export async function logoutAction() {
 
 ## ⚠️ 에러 처리
 
+### 공통 응답 포맷
+
+모든 API 응답은 `ApiResponse` 포맷을 따릅니다.
+
+#### 성공 응답 (HTTP 2xx)
+
+```typescript
+interface ApiSuccessResponse<T> {
+  code: 'OK';
+  message: string;
+  data: T;
+}
+
+// 예시
+{
+  "code": "OK",
+  "message": "정상적으로 처리되었습니다.",
+  "data": {
+    "memberId": 1,
+    "token": "eyJhbGciOiJIUzM4NCJ9..."
+  }
+}
+```
+
+#### 실패/에러 응답 (HTTP 4xx, 5xx)
+
+```typescript
+interface ApiErrorResponse {
+  code: string;
+  message: string;
+  data: Record<string, string> | null;
+}
+
+// 예시
+{
+  "code": "VALIDATION_ERROR",
+  "message": "요청 데이터가 이상해요.",
+  "data": {
+    "amount": "환전 금액은 0보다 커야 합니다."
+  }
+}
+```
+
+### 주요 에러 코드
+
+#### API 관련 에러
+
+| Code | 기본 메시지 | 설명 |
+|------|-----------|------|
+| `BAD_REQUEST` | 잘못된 요청입니다. | 일반적인 요청 오류 시 발생합니다. |
+| `NOT_FOUND` | 요청한 URL을 찾을 수 없어요. | 존재하지 않는 API 경로를 요청한 경우 발생합니다. |
+| `UNAUTHORIZED` | 로그인이 필요한 서비스입니다. | 인증 토큰이 없거나 유효하지 않을 때 발생합니다. |
+| `VALIDATION_ERROR` | 요청 데이터가 이상해요. | API 요청 파라미터의 유효성 검사에 실패한 경우 발생합니다. |
+| `MISSING_PARAMETER` | 필수 요청 파라미터가 누락되었어요. | 필수 파라미터가 요청에 포함되지 않은 경우 발생합니다. |
+
+#### 도메인 관련 에러
+
+| Code | 메시지 (예시) | 설명 |
+|------|--------------|------|
+| `WALLET_INSUFFICIENT_BALANCE` | 지갑의 잔액이 부족합니다. | 출금 또는 환전 시 지갑의 잔액이 요청 금액보다 적을 때 발생합니다. |
+| `INVALID_DEPOSIT_AMOUNT` | 입금 금액이 유효하지 않습니다. | 입금 금액이 0 이하일 경우 발생합니다. |
+| `INVALID_WITHDRAW_AMOUNT` | 출금 금액이 유효하지 않습니다. | 출금 금액이 0 이하일 경우 발생합니다. |
+| `CURRENCY_MISMATCH` | 통화 타입이 일치하지 않습니다. | 연산 또는 비교하는 두 금액의 통화가 다를 경우 발생합니다. |
+| `INVALID_AMOUNT_SCALE` | USD 통화는 소수점 2자리까지만 허용됩니다... | 각 통화 정책에 맞지 않는 소수점 자릿수로 금액을 요청한 경우 발생합니다. |
+| `EXCHANGE_RATE_CURRENCY_MISMATCH` | 환율의 대상 통화(USD)와 변환하려는 금액의 통화(EUR)가... | 조회된 환율 정보와 사용자가 환전하려는 통화가 일치하지 않을 때 발생합니다. |
+| `UNSUPPORTED_FOREX_CONVERSION_CURRENCY` | 외화 변환은 원화(KRW)를 지원하지 않습니다. | 외화(USD)를 다른 외화(JPY)로 직접 변환하려고 시도할 때 발생합니다. |
+| `INVALID_EXCHANGE_RATE_CURRENCY` | 환율 정보의 통화는 KRW가 될 수 없습니다. | 환율 정보 자체에 KRW를 사용하려고 할 때 발생합니다. |
+| `UNSUPPORTED_CURRENCY_FOR_KRW_CONVERSION` | 원화(KRW) 변환은 KRW 통화만 지원합니다... | 원화를 다른 통화로 변환하는 로직에 KRW가 아닌 다른 통화가 사용되었을 때 발생합니다. |
+
 ### Server Action에서 에러 처리
 
 ```typescript
 'use server'
 
+interface ApiErrorResponse {
+  code: string;
+  message: string;
+  data: Record<string, string> | null;
+}
+
 export async function exampleAction() {
   try {
-    const response = await fetch(...);
+    const response = await fetch(`${process.env.API_BASE_URL}/endpoint`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ... }),
+    });
     
+    // HTTP 에러 상태 확인
     if (!response.ok) {
-      // HTTP 에러 처리
-      const error = await response.json();
-      throw new Error(error.message || `HTTP ${response.status}`);
+      const error: ApiErrorResponse = await response.json();
+      
+      // 에러 코드에 따른 처리
+      switch (error.code) {
+        case 'UNAUTHORIZED':
+          // 인증 에러 - 로그아웃 처리
+          cookies().delete('auth-token');
+          throw new Error('로그인이 필요합니다.');
+        
+        case 'VALIDATION_ERROR':
+          // 유효성 검사 에러 - 첫 번째 에러 메시지 반환
+          const firstError = error.data ? Object.values(error.data)[0] : error.message;
+          throw new Error(firstError);
+        
+        case 'WALLET_INSUFFICIENT_BALANCE':
+          throw new Error('지갑의 잔액이 부족합니다.');
+        
+        default:
+          throw new Error(error.message || `HTTP ${response.status}`);
+      }
     }
     
-    return response.json();
+    const data = await response.json();
+    return data.data; // ApiResponse의 data 필드 반환
+    
   } catch (error) {
     // 네트워크 에러 등
     if (error instanceof Error) {
-      throw new Error(error.message);
+      throw error;
     }
-    throw new Error('Unknown error occurred');
+    throw new Error('알 수 없는 오류가 발생했습니다.');
   }
 }
 ```
 
 ### Client에서 에러 처리
 
+#### React Query Mutation에서 에러 처리
+
 ```typescript
 // src/features/create-order/hooks/useCreateOrderMutation.ts
 import { useMutation } from '@tanstack/react-query';
 import { createOrderAction } from '@/app/actions/order/createOrder';
+import { useRouter } from 'next/navigation';
 
 export function useCreateOrderMutation() {
+  const router = useRouter();
+  
   return useMutation({
     mutationFn: createOrderAction,
     onError: (error: Error) => {
-      // 에러 처리
       console.error('Order creation failed:', error.message);
       
-      // 사용자에게 표시할 에러 메시지
-      if (error.message.includes('Unauthorized')) {
-        // 로그아웃 처리
-      } else if (error.message.includes('Insufficient balance')) {
-        // 잔액 부족 메시지
+      // 에러 메시지 기반 처리
+      if (error.message.includes('로그인이 필요합니다')) {
+        router.push('/login');
+      } else if (error.message.includes('잔액이 부족')) {
+        // 잔액 부족 알림 표시
+        toast.error('지갑의 잔액이 부족합니다.');
       } else {
         // 일반 에러 메시지
+        toast.error(error.message || '환전 요청에 실패했습니다.');
       }
     },
+    onSuccess: () => {
+      toast.success('환전이 완료되었습니다.');
+    },
   });
+}
+```
+
+#### React Query Query에서 에러 처리
+
+```typescript
+// src/entities/wallet/hooks/useWalletsQuery.ts
+import { useQuery } from '@tanstack/react-query';
+import { getWalletsAction } from '@/app/actions/wallet/getWallets';
+
+export function useWalletsQuery() {
+  return useQuery({
+    queryKey: ['wallets'],
+    queryFn: () => getWalletsAction(),
+    staleTime: 30 * 1000,
+    retry: (failureCount, error) => {
+      // UNAUTHORIZED 에러는 재시도하지 않음
+      if (error.message.includes('로그인이 필요합니다')) {
+        return false;
+      }
+      return failureCount < 3;
+    },
+    onError: (error: Error) => {
+      console.error('Failed to fetch wallets:', error.message);
+    },
+  });
+}
+```
+
+### 공통 에러 처리 Hook
+
+```typescript
+// src/shared/hooks/useErrorHandler.ts
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+
+export function useErrorHandler() {
+  const router = useRouter();
+  
+  const handleError = useCallback((error: Error) => {
+    if (error.message.includes('로그인이 필요합니다')) {
+      router.push('/login');
+      return;
+    }
+    
+    // 토스트 알림 등으로 에러 표시
+    console.error('Error:', error.message);
+  }, [router]);
+  
+  return { handleError };
+}
+```
+
+### 에러 타입 정의
+
+```typescript
+// src/shared/types/error.ts
+
+/**
+ * API 에러 응답
+ */
+export interface ApiErrorResponse {
+  code: string;
+  message: string;
+  data: Record<string, string> | null;
+}
+
+/**
+ * 커스텀 에러 클래스
+ */
+export class ApiError extends Error {
+  constructor(
+    public code: string,
+    message: string,
+    public data: Record<string, string> | null = null
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 ```
 
