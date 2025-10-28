@@ -60,7 +60,7 @@
 ### 1. 페이지 컨테이너
 
 ```tsx
-배경: bg-linear-to-br from-surface-secondary via-surface-primary to-primary-50
+배경: bg-surface-secondary
 패딩: p-4
 최소 높이: min-h-screen
 정렬: flex items-center justify-center
@@ -81,11 +81,10 @@
 컴포넌트: Rss (lucide-react)
 크기: w-16 h-16
 색상: text-primary-500
-배경: bg-gradient-to-br from-primary-100 to-primary-50
-  dark:from-primary-900/30 dark:to-primary-950/20
+배경: bg-surface-tertiary
 패딩: p-4
 테두리: rounded-2xl
-그림자: shadow-lg shadow-primary-500/20
+그림자: shadow-lg
 위치: mx-auto (중앙 정렬)
 여백: mb-8
 ```
@@ -217,10 +216,10 @@ import { Input, Button, Card, CardContent } from '@/shared/ui'
 
 export function LoginPage() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-surface-secondary via-surface-primary to-primary-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-surface-secondary flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* 브랜드 아이콘 */}
-        <div className="w-16 h-16 mx-auto mb-8 bg-linear-to-br from-primary-100 to-primary-50 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20 hover:scale-105 transition-transform duration-300">
+        <div className="w-16 h-16 mx-auto mb-8 bg-surface-tertiary rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300">
           <Rss className="w-9 h-9 text-primary-500" strokeWidth={2.5} />
         </div>
 

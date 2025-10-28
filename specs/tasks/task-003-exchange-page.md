@@ -201,18 +201,18 @@
 ### 4. 총 보유 자산
 
 ```tsx
-배경: bg-gradient-to-r from-primary-500 to-primary-600
-테두리: 없음
+배경: bg-surface-invert
+테두리: border border-border-primary
 둥근 모서리: rounded-xl
 패딩: p-6
 여백: mt-4
-그림자: shadow-lg shadow-primary-500/30
+그림자: shadow-lg
 ```
 
 ```tsx
-<div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-6 shadow-lg shadow-primary-500/30">
-  <p className="text-sm text-white/80">총 보유 자산</p>
-  <p className="text-3xl font-bold text-white mt-2">₩ 3,000,000</p>
+<div className="bg-surface-invert rounded-xl p-6 shadow-lg border border-border-primary">
+  <p className="text-sm text-text-secondary">총 보유 자산</p>
+  <p className="text-3xl font-bold text-text-primary mt-2">₩ 3,000,000</p>
 </div>
 ```
 
@@ -522,9 +522,9 @@ export function ExchangePage() {
             </Card>
 
             {/* 총 보유 자산 */}
-            <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-6 shadow-lg shadow-primary-500/30">
-              <p className="text-sm text-white/80">총 보유 자산</p>
-              <p className="text-3xl font-bold text-white mt-2">₩ 3,000,000</p>
+            <div className="bg-surface-invert rounded-xl p-6 shadow-lg border border-border-primary">
+              <p className="text-sm text-text-secondary">총 보유 자산</p>
+              <p className="text-3xl font-bold text-text-primary mt-2">₩ 3,000,000</p>
             </div>
           </aside>
 

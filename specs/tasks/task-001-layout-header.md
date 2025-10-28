@@ -124,7 +124,7 @@ z-index: z-sticky (1020)
   - variant="ghost"
   - 기본: text-secondary-700 dark:text-secondary-300
   - Hover: bg-secondary-100 dark:bg-secondary-800
-  - Active: bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400
+  - Active: bg-surface-tertiary text-primary-600 dark:text-primary-400
 ```
 
 **"환전내역" 버튼**:
@@ -285,7 +285,7 @@ export function Header({ isAuthenticated = false, currentPath = '/' }: HeaderPro
               <Link href="/exchange">
                 <Button 
                   variant="ghost" 
-                  className={`gap-2 ${currentPath === '/exchange' ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400' : ''}`}
+                  className={`gap-2 ${currentPath === '/exchange' ? 'bg-surface-tertiary text-primary-600 dark:text-primary-400' : ''}`}
                 >
                   <ArrowLeftRight className="w-4 h-4" />
                   <span className="hidden lg:inline">환전하기</span>
@@ -295,7 +295,7 @@ export function Header({ isAuthenticated = false, currentPath = '/' }: HeaderPro
               <Link href="/history">
                 <Button 
                   variant="ghost" 
-                  className={`gap-2 ${currentPath === '/history' ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400' : ''}`}
+                  className={`gap-2 ${currentPath === '/history' ? 'bg-surface-tertiary text-primary-600 dark:text-primary-400' : ''}`}
                 >
                   <History className="w-4 h-4" />
                   <span className="hidden lg:inline">환전내역</span>
@@ -487,14 +487,14 @@ export default function PublicLayout({
 --logo-gradient: from-primary-500 to-primary-600
 --nav-text: text-secondary-700
 --nav-hover: bg-secondary-100
---nav-active: bg-primary-50 text-primary-700
+--nav-active: bg-surface-tertiary text-primary-600
 
 /* Dark Mode */
 --header-bg: bg-secondary-900/80
 --header-border: border-secondary-800/50
 --nav-text: text-secondary-300
 --nav-hover: bg-secondary-800
---nav-active: bg-primary-900/20 text-primary-400
+--nav-active: bg-surface-tertiary text-primary-400
 ```
 
 ### 간격
@@ -583,7 +583,7 @@ className="bg-white/80 dark:bg-secondary-900/80 backdrop-blur-md"
 
 현재 페이지에 따라 네비게이션 하이라이트:
 ```tsx
-className={currentPath === '/exchange' ? 'bg-primary-50 text-primary-700' : ''}
+className={currentPath === '/exchange' ? 'bg-surface-tertiary text-primary-600' : ''}
 ```
 
 ---
