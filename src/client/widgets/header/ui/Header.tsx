@@ -34,10 +34,10 @@ export function Header({ isAuthenticated = false, currentPath = '/' }: HeaderPro
           {/* Navigation (Desktop - Authenticated) */}
           {isAuthenticated && (
             <nav className="hidden md:flex items-center gap-1">
-              <Link href="/exchange">
+              <Link href="/">
                 <Button 
                   variant="ghost" 
-                  className={`gap-2 ${currentPath === '/exchange' ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400' : ''}`}
+                  className={`gap-2 ${currentPath === '/' ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/20 dark:text-primary-400' : ''}`}
                 >
                   <ArrowLeftRight className="w-4 h-4" />
                   <span className="hidden lg:inline">환전하기</span>
