@@ -60,7 +60,7 @@
 ### 1. 페이지 컨테이너
 
 ```tsx
-배경: bg-secondary-50 dark:bg-secondary-950
+배경: bg-surface-secondary
 패딩: p-6 lg:p-8
 최소 높이: min-h-screen
 ```
@@ -79,7 +79,7 @@
 ```tsx
 텍스트: "환전 내역"
 크기: text-3xl font-bold
-색상: text-secondary-900 dark:text-secondary-50
+색상: text-text-primary
 여백: mb-3
 ```
 
@@ -88,7 +88,7 @@
 ```tsx
 텍스트: "환전 내역을 확인하실 수 있어요."
 크기: text-lg
-색상: text-secondary-600 dark:text-secondary-400
+색상: text-text-secondary
 ```
 
 ---
@@ -96,8 +96,8 @@
 ### 3. 테이블 컨테이너
 
 ```tsx
-배경: bg-white dark:bg-secondary-900
-테두리: border border-secondary-200 dark:border-secondary-800
+배경: bg-surface-primary
+테두리: border border-border-primary
 둥근 모서리: rounded-2xl
 그림자: shadow-xl
 오버플로: overflow-hidden
@@ -206,7 +206,7 @@
 ### 6. 호버 효과
 
 ```tsx
-행 호버: hover:bg-secondary-50 dark:hover:bg-secondary-800
+행 호버: hover:bg-surface-secondary
 트랜지션: transition-colors duration-200
 커서: cursor-pointer (클릭 가능한 경우)
 ```

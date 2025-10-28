@@ -60,15 +60,10 @@
 ### 1. 페이지 컨테이너
 
 ```tsx
-배경: bg-gradient-to-br from-secondary-50 via-white to-primary-50
+배경: bg-linear-to-br from-surface-secondary via-surface-primary to-primary-50
 패딩: p-4
 최소 높이: min-h-screen
 정렬: flex items-center justify-center
-```
-
-**다크모드**:
-```tsx
-배경: bg-gradient-to-br from-secondary-950 via-secondary-900 to-secondary-950
 ```
 
 ---
@@ -109,7 +104,7 @@ hover:scale-105 transition-transform duration-300
 ```tsx
 크기: text-4xl
 굵기: font-bold
-색상: text-secondary-900 dark:text-secondary-50
+색상: text-text-primary
 정렬: text-center
 여백: mb-3
 ```
@@ -118,7 +113,7 @@ hover:scale-105 transition-transform duration-300
 
 ```tsx
 크기: text-lg
-색상: text-secondary-600 dark:text-secondary-400
+색상: text-text-secondary
 정렬: text-center
 여백: mb-8
 ```
@@ -128,8 +123,8 @@ hover:scale-105 transition-transform duration-300
 ### 4. 폼 카드
 
 ```tsx
-배경: bg-white dark:bg-secondary-900
-테두리: border border-secondary-200 dark:border-secondary-800
+배경: bg-surface-primary
+테두리: border border-border-primary
 둥근 모서리: rounded-2xl
 패딩: p-8
 그림자: shadow-xl
@@ -151,7 +146,7 @@ hover:scale-105 transition-transform duration-300
 텍스트: "이메일 주소를 입력해주세요."
 크기: text-sm
 굵기: font-medium
-색상: text-secondary-700 dark:text-secondary-300
+색상: text-text-secondary
 여백: mb-2
 ```
 
@@ -169,7 +164,7 @@ data-testid: "email-input"
 
 **스타일**:
 ```tsx
-className="h-12 text-base border-secondary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-secondary-700 dark:bg-secondary-800"
+className="h-12 text-base border-border-primary focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 bg-surface-primary"
 ```
 
 ---
@@ -181,11 +176,10 @@ className="h-12 text-base border-secondary-300 focus:border-primary-500 focus:ri
 타입: submit
 너비: w-full
 높이: h-12
-배경: bg-gradient-to-r from-secondary-900 to-secondary-800
-  dark:from-secondary-800 dark:to-secondary-700
-텍스트: text-white font-semibold text-base
-그림자: shadow-lg shadow-secondary-900/30
-호버: hover:shadow-xl hover:shadow-secondary-900/40
+배경: bg-surface-invert
+텍스트: text-text-invert font-semibold text-base
+그림자: shadow-lg
+호버: hover:shadow-xl hover:opacity-90
 data-testid: "login-button"
 ```
 
@@ -202,7 +196,7 @@ hover:scale-[1.02]
 ```tsx
 텍스트: "가입되지 않은 이메일은 자동으로 회원가입됩니다"
 크기: text-xs
-색상: text-secondary-500 dark:text-secondary-400
+색상: text-text-tertiary
 정렬: text-center
 여백: mt-4
 ```
@@ -223,32 +217,32 @@ import { Input, Button, Card, CardContent } from '@/shared/ui'
 
 export function LoginPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary-50 via-white to-primary-50 dark:from-secondary-950 dark:via-secondary-900 dark:to-secondary-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-surface-secondary via-surface-primary to-primary-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* 브랜드 아이콘 */}
-        <div className="w-16 h-16 mx-auto mb-8 bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/30 dark:to-primary-950/20 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20 hover:scale-105 transition-transform duration-300">
+        <div className="w-16 h-16 mx-auto mb-8 bg-linear-to-br from-primary-100 to-primary-50 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20 hover:scale-105 transition-transform duration-300">
           <Rss className="w-9 h-9 text-primary-500" strokeWidth={2.5} />
         </div>
 
         {/* 헤더 */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-secondary-900 dark:text-secondary-50 mb-3">
+          <h1 className="text-4xl font-bold text-text-primary mb-3">
             반갑습니다.
           </h1>
-          <p className="text-lg text-secondary-600 dark:text-secondary-400">
+          <p className="text-lg text-text-secondary">
             로그인 정보를 입력해주세요.
           </p>
         </div>
 
         {/* 폼 카드 */}
-        <Card className="border-secondary-200 dark:border-secondary-800 shadow-xl">
+        <Card className="border-border-primary shadow-xl">
           <CardContent className="pt-8 pb-8 px-8">
             <form className="space-y-6">
               {/* 이메일 입력 */}
               <div className="space-y-2">
                 <label 
                   htmlFor="email" 
-                  className="block text-sm font-medium text-secondary-700 dark:text-secondary-300"
+                  className="block text-sm font-medium text-text-secondary"
                 >
                   이메일 주소를 입력해주세요.
                 </label>
@@ -257,21 +251,21 @@ export function LoginPage() {
                   type="email"
                   placeholder="example@email.com"
                   data-testid="email-input"
-                  className="h-12 text-base border-secondary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-secondary-700 dark:bg-secondary-800"
+                  className="h-12 text-base border-border-primary focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 bg-surface-primary"
                 />
               </div>
 
               {/* 로그인 버튼 */}
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-secondary-900 to-secondary-800 dark:from-secondary-800 dark:to-secondary-700 hover:shadow-xl hover:shadow-secondary-900/40 text-white font-semibold text-base shadow-lg shadow-secondary-900/30 transition-all duration-200 hover:scale-[1.02]"
+                className="w-full h-12 bg-surface-invert hover:opacity-90 text-text-invert font-semibold text-base shadow-lg transition-all duration-200 hover:scale-[1.02]"
                 data-testid="login-button"
               >
                 로그인 하기
               </Button>
 
               {/* 안내 문구 */}
-              <p className="text-xs text-secondary-500 dark:text-secondary-400 text-center mt-4">
+              <p className="text-xs text-text-tertiary text-center mt-4">
                 가입되지 않은 이메일은 자동으로 회원가입됩니다
               </p>
             </form>

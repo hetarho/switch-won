@@ -65,7 +65,7 @@
 ### 1. 페이지 컨테이너
 
 ```tsx
-배경: bg-secondary-50 dark:bg-secondary-950
+배경: bg-surface-secondary
 패딩: p-6 lg:p-8
 최소 높이: min-h-screen
 ```
@@ -88,15 +88,15 @@
 ```tsx
 텍스트: "환율 정보"
 크기: text-2xl font-bold
-색상: text-secondary-900 dark:text-secondary-50
+색상: text-text-primary
 여백: mb-6
 ```
 
 ### 2. 환율 카드 (USD)
 
 ```tsx
-배경: bg-white dark:bg-secondary-900
-테두리: border border-secondary-200 dark:border-secondary-800
+배경: bg-surface-primary
+테두리: border border-border-primary
 둥근 모서리: rounded-xl
 패딩: p-6
 그림자: shadow-md
@@ -156,14 +156,15 @@
 ```tsx
 제목: "내 지갑"
 크기: text-xl font-semibold
+색상: text-text-primary
 여백: mt-8 mb-4
 ```
 
 #### 지갑 카드
 
 ```tsx
-배경: bg-white dark:bg-secondary-900
-테두리: border border-secondary-200 dark:border-secondary-800
+배경: bg-surface-primary
+테두리: border border-border-primary
 둥근 모서리: rounded-xl
 패딩: p-6
 ```
@@ -222,8 +223,8 @@
 ### 1. 폼 카드 컨테이너
 
 ```tsx
-배경: bg-white dark:bg-secondary-900
-테두리: border border-secondary-200 dark:border-secondary-800
+배경: bg-surface-primary
+테두리: border border-border-primary
 둥근 모서리: rounded-2xl
 패딩: p-8
 그림자: shadow-xl
@@ -284,7 +285,7 @@
 **활성 상태**:
 ```tsx
 배경: bg-primary-500 text-white
-비활성: border-secondary-300 text-secondary-700
+비활성: border-border-primary text-text-secondary
 ```
 
 ---
@@ -296,7 +297,7 @@
 ```tsx
 텍스트: "매도 금액" (또는 "매입 금액")
 크기: text-sm font-medium
-색상: text-secondary-700 dark:text-secondary-300
+색상: text-text-secondary
 여백: mt-6 mb-2
 ```
 
@@ -353,8 +354,8 @@
 #### 결과 카드
 
 ```tsx
-배경: bg-secondary-50 dark:bg-secondary-800
-테두리: border border-secondary-200 dark:border-secondary-700
+배경: bg-surface-secondary
+테두리: border border-border-primary
 둥근: rounded-xl
 패딩: p-4
 ```
@@ -393,9 +394,9 @@
 ```
 
 ```tsx
-<div className="flex items-center justify-center gap-2 text-secondary-600 dark:text-secondary-400">
+<div className="flex items-center justify-center gap-2 text-text-secondary">
   <span className="text-sm">적용 환율</span>
-  <span className="font-semibold text-secondary-900 dark:text-secondary-50">
+  <span className="font-semibold text-text-primary">
     1 USD = 1,320.50 원
   </span>
 </div>
@@ -408,7 +409,7 @@
 ```tsx
 <Button
   type="submit"
-  className="w-full h-14 bg-gradient-to-r from-secondary-900 to-secondary-800 hover:from-secondary-800 hover:to-secondary-700 text-white font-semibold text-lg shadow-xl"
+  className="w-full h-14 bg-surface-invert hover:opacity-90 text-text-invert font-semibold text-lg shadow-xl"
   data-testid="exchange-button"
 >
   환전하기
@@ -431,12 +432,12 @@ import { Button, Input, Card } from '@/shared/ui'
 
 export function ExchangePage() {
   return (
-    <div className="min-h-screen bg-secondary-50 dark:bg-secondary-950 p-6 lg:p-8">
+    <div className="min-h-screen bg-surface-secondary p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
           {/* 좌측: 환율 정보 */}
           <aside>
-            <h2 className="text-2xl font-bold text-secondary-900 dark:text-secondary-50 mb-6">
+            <h2 className="text-2xl font-bold text-text-primary mb-6">
               환율 정보
             </h2>
             
@@ -444,19 +445,19 @@ export function ExchangePage() {
             <Card className="p-6 mb-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-secondary-600 dark:text-secondary-400">미국 달러</p>
+                  <p className="text-sm text-text-secondary">미국 달러</p>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-3xl font-bold text-secondary-900 dark:text-secondary-50">
+                    <span className="text-3xl font-bold text-text-primary">
                       1,320.50
                     </span>
-                    <span className="text-lg text-secondary-600 dark:text-secondary-400">
+                    <span className="text-lg text-text-secondary">
                       KRW
                     </span>
                   </div>
                 </div>
                 
                 <div className="flex flex-col items-end">
-                  <span className="text-xs text-secondary-500">미국 달러</span>
+                  <span className="text-xs text-text-tertiary">미국 달러</span>
                   <div className="flex items-center gap-1 mt-2 px-2 py-1 bg-green-50 dark:bg-green-900/20 rounded-md">
                     <TrendingUp className="w-4 h-4 text-green-600" />
                     <span className="text-sm font-semibold text-green-600">+13.5%</span>
@@ -469,19 +470,19 @@ export function ExchangePage() {
             <Card className="p-6 mb-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-secondary-600 dark:text-secondary-400">일본 엔</p>
+                  <p className="text-sm text-text-secondary">일본 엔</p>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-3xl font-bold text-secondary-900 dark:text-secondary-50">
+                    <span className="text-3xl font-bold text-text-primary">
                       9.85
                     </span>
-                    <span className="text-lg text-secondary-600 dark:text-secondary-400">
+                    <span className="text-lg text-text-secondary">
                       KRW
                     </span>
                   </div>
                 </div>
                 
                 <div className="flex flex-col items-end">
-                  <span className="text-xs text-secondary-500">일본 엔</span>
+                  <span className="text-xs text-text-tertiary">일본 엔</span>
                   <div className="flex items-center gap-1 mt-2 px-2 py-1 bg-red-50 dark:bg-red-900/20 rounded-md">
                     <TrendingDown className="w-4 h-4 text-red-600" />
                     <span className="text-sm font-semibold text-red-600">-1.1%</span>
@@ -491,29 +492,29 @@ export function ExchangePage() {
             </Card>
 
             {/* 내 지갑 */}
-            <h3 className="text-xl font-semibold text-secondary-900 dark:text-secondary-50 mt-8 mb-4">
+            <h3 className="text-xl font-semibold text-text-primary mt-8 mb-4">
               내 지갑
             </h3>
             
             <Card className="p-6 mb-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-secondary-600 dark:text-secondary-400">KRW</span>
-                  <span className="text-lg font-semibold text-secondary-900 dark:text-secondary-50">
+                  <span className="text-sm text-text-secondary">KRW</span>
+                  <span className="text-lg font-semibold text-text-primary">
                     ₩ 1,200,000
                   </span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-secondary-600 dark:text-secondary-400">USD</span>
-                  <span className="text-lg font-semibold text-secondary-900 dark:text-secondary-50">
+                  <span className="text-sm text-text-secondary">USD</span>
+                  <span className="text-lg font-semibold text-text-primary">
                     $ 50,000
                   </span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-secondary-600 dark:text-secondary-400">JPY</span>
-                  <span className="text-lg font-semibold text-secondary-900 dark:text-secondary-50">
+                  <span className="text-sm text-text-secondary">JPY</span>
+                  <span className="text-lg font-semibold text-text-primary">
                     ¥ 150,000
                   </span>
                 </div>
@@ -551,7 +552,7 @@ export function ExchangePage() {
 
               {/* 매도 금액 */}
               <div className="mt-6">
-                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   매도 금액
                 </label>
                 <div className="relative">
@@ -560,7 +561,7 @@ export function ExchangePage() {
                     placeholder="30"
                     className="h-14 text-right pr-24 text-2xl font-semibold"
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary-500">
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary">
                     달러 입력
                   </div>
                 </div>
@@ -568,22 +569,22 @@ export function ExchangePage() {
 
               {/* 환전 방향 */}
               <div className="flex justify-center my-6">
-                <div className="w-10 h-10 rounded-full bg-secondary-100 dark:bg-secondary-800 flex items-center justify-center">
-                  <ArrowDownUp className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
+                <div className="w-10 h-10 rounded-full bg-surface-secondary flex items-center justify-center">
+                  <ArrowDownUp className="w-5 h-5 text-text-tertiary" />
                 </div>
               </div>
 
               {/* 원화 환율 */}
               <div>
-                <label className="block text-sm font-medium text-secondary-700 dark:text-secondary-300 mb-2">
+                <label className="block text-sm font-medium text-text-secondary mb-2">
                   원화 환율
                 </label>
-                <div className="bg-secondary-50 dark:bg-secondary-800 border border-secondary-200 dark:border-secondary-700 rounded-xl p-4">
+                <div className="bg-surface-secondary border border-border-primary rounded-xl p-4">
                   <div className="text-right">
-                    <span className="text-3xl font-bold text-primary-600 dark:text-primary-400">
+                    <span className="text-3xl font-bold text-primary-600">
                       42,530
                     </span>
-                    <span className="text-lg text-secondary-600 dark:text-secondary-400 ml-2">
+                    <span className="text-lg text-text-secondary ml-2">
                       원 받으실거예요
                     </span>
                   </div>
@@ -591,9 +592,9 @@ export function ExchangePage() {
               </div>
 
               {/* 적용 환율 */}
-              <div className="flex items-center justify-center gap-2 text-secondary-600 dark:text-secondary-400 my-6">
+              <div className="flex items-center justify-center gap-2 text-text-secondary my-6">
                 <span className="text-sm">적용 환율</span>
-                <span className="font-semibold text-secondary-900 dark:text-secondary-50">
+                <span className="font-semibold text-text-primary">
                   1 USD = 1,320.50 원
                 </span>
               </div>
@@ -601,7 +602,7 @@ export function ExchangePage() {
               {/* 환전하기 버튼 */}
               <Button
                 type="submit"
-                className="w-full h-14 bg-gradient-to-r from-secondary-900 to-secondary-800 hover:from-secondary-800 hover:to-secondary-700 text-white font-semibold text-lg shadow-xl"
+                className="w-full h-14 bg-surface-invert hover:opacity-90 text-text-invert font-semibold text-lg shadow-xl"
                 data-testid="exchange-button"
               >
                 환전하기
