@@ -97,28 +97,25 @@ export interface AuthContextType {
  * 지갑 엔티티
  */
 export interface Wallet {
+  /** 지갑 ID */
+  walletId: number;
+  
   /** 통화 코드 (ISO 4217) */
   currency: Currency;
   
-  /** 잔액 (Decimal string) */
-  balance: string;
-  
-  /** 통화 심볼 (예: ₩, $) */
-  symbol: string;
-  
-  /** 통화 이름 */
-  name: string;
+  /** 잔액 */
+  balance: number;
 }
 
 /**
  * 지갑 목록 응답
  */
 export interface WalletsData {
+  /** 총 원화 잔액 */
+  totalKrwBalance: number;
+  
   /** 지갑 목록 */
   wallets: Wallet[];
-  
-  /** 마지막 업데이트 시간 */
-  updatedAt: string; // ISO 8601
 }
 
 /**
@@ -150,20 +147,20 @@ export interface UseWalletsQueryResult {
  * 환율 엔티티
  */
 export interface ExchangeRate {
-  /** 출발 통화 */
-  from: Currency;
+  /** 환율 ID */
+  exchangeRateId: number;
   
-  /** 도착 통화 */
-  to: Currency;
+  /** 통화 코드 */
+  currency: Currency;
   
-  /** 매수율 (Decimal string) */
-  buyRate: string;
+  /** 환율 */
+  rate: number;
   
-  /** 매도율 (Decimal string) */
-  sellRate: string;
+  /** 변동률 */
+  changePercentage: number;
   
-  /** 환율 업데이트 시간 */
-  timestamp: string; // ISO 8601
+  /** 적용 일시 */
+  applyDateTime: string; // ISO 8601
 }
 
 /**
@@ -228,67 +225,37 @@ export type OrderStatus =
  * 주문 엔티티
  */
 export interface Order {
-  /** 주문 고유 ID */
-  id: string;
-  
-  /** 사용자 ID */
-  userId: string;
+  /** 주문 ID */
+  orderId: number;
   
   /** 출발 통화 */
   fromCurrency: Currency;
   
+  /** 출발 금액 */
+  fromAmount: number;
+  
   /** 도착 통화 */
   toCurrency: Currency;
   
-  /** 출발 금액 (Decimal string) */
-  fromAmount: string;
-  
-  /** 도착 금액 (Decimal string) */
-  toAmount: string;
+  /** 도착 금액 */
+  toAmount: number;
   
   /** 적용된 환율 */
-  rate: string;
-  
-  /** 수수료 (Decimal string) */
-  fee: string;
-  
-  /** 주문 상태 */
-  status: OrderStatus;
+  appliedRate: number;
   
   /** 주문 생성 시간 */
-  createdAt: string; // ISO 8601
-  
-  /** 주문 완료 시간 (선택사항) */
-  completedAt?: string; // ISO 8601
+  orderedAt: string; // ISO 8601
 }
 
 /**
  * 환전 견적
  */
 export interface Quote {
-  /** 출발 통화 */
-  fromCurrency: Currency;
+  /** 원화 금액 */
+  krwAmount: number;
   
-  /** 도착 통화 */
-  toCurrency: Currency;
-  
-  /** 출발 금액 (Decimal string) */
-  fromAmount: string;
-  
-  /** 도착 금액 (Decimal string) */
-  toAmount: string;
-  
-  /** 적용 환율 */
-  rate: string;
-  
-  /** 수수료 (Decimal string) */
-  fee: string;
-  
-  /** 최종 받을 금액 (Decimal string) */
-  estimatedTotal: string;
-  
-  /** 견적 만료 시간 */
-  expiresAt: string; // ISO 8601
+  /** 적용된 환율 */
+  appliedRate: number;
 }
 
 /**
@@ -297,26 +264,6 @@ export interface Quote {
 export interface OrdersData {
   /** 주문 목록 */
   orders: Order[];
-  
-  /** 페이지네이션 정보 */
-  pagination: Pagination;
-}
-
-/**
- * 페이지네이션
- */
-export interface Pagination {
-  /** 전체 항목 수 */
-  total: number;
-  
-  /** 페이지당 항목 수 */
-  limit: number;
-  
-  /** 현재 오프셋 */
-  offset: number;
-  
-  /** 다음 페이지 존재 여부 */
-  hasMore: boolean;
 }
 ```
 
@@ -355,7 +302,7 @@ export interface LoginOutput {
 export interface GetQuoteInput {
   fromCurrency: Currency;
   toCurrency: Currency;
-  amount: string;
+  forexAmount: number;
 }
 
 /**
@@ -369,9 +316,10 @@ export interface GetQuoteOutput {
  * 환전 주문 생성 Action 입력
  */
 export interface CreateOrderInput {
+  exchangeRateId: number;
   fromCurrency: Currency;
   toCurrency: Currency;
-  amount: string;
+  forexAmount: number;
 }
 
 /**

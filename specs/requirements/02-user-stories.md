@@ -133,7 +133,7 @@ GET /wallets
 
 **API:**
 ```
-GET /exchange-rates
+GET /exchange-rates/latest
 ```
 
 **Technical Notes:**

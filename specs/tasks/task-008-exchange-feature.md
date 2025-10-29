@@ -15,7 +15,7 @@
   - [api-spec.md](../design/api-spec.md) - Server Actions 패턴
   - [data-models.md](../design/data-models.md) - 타입 정의
 - **BDD**: 
-  - [exchange-rates.feature](../../cypress/features/exchange/exchange-rates.feature)
+  - [exchange-rates.feature](../../cypress/features/exchange/exchange-rates/latest.feature)
   - [exchange-order.feature](../../cypress/features/exchange/exchange-order.feature)
   - [wallet.feature](../../cypress/features/exchange/wallet.feature)
 
@@ -40,15 +40,14 @@
 import { cookies } from 'next/headers';
 
 export interface Wallet {
+  walletId: number;
   currency: string;
-  balance: string;
-  symbol: string;
-  name: string;
+  balance: number;
 }
 
 export interface WalletsData {
+  totalKrwBalance: number;
   wallets: Wallet[];
-  updatedAt: string;
 }
 
 export async function getWalletsAction(): Promise<WalletsData> {
@@ -85,11 +84,11 @@ export async function getWalletsAction(): Promise<WalletsData> {
 import { cookies } from 'next/headers';
 
 export interface ExchangeRate {
-  from: string;
-  to: string;
-  buyRate: string;
-  sellRate: string;
-  timestamp: string;
+  exchangeRateId: number;
+  currency: string;
+  rate: number;
+  changePercentage: number;
+  applyDateTime: string;
 }
 
 export interface ExchangeRatesData {
@@ -104,7 +103,7 @@ export async function getExchangeRatesAction(): Promise<ExchangeRatesData> {
     throw new Error('로그인이 필요합니다.');
   }
   
-  const response = await fetch(`${process.env.API_BASE_URL}/exchange-rates`, {
+  const response = await fetch(`${process.env.API_BASE_URL}/exchange-rates/latest`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -133,18 +132,12 @@ import { cookies } from 'next/headers';
 export interface GetQuoteInput {
   fromCurrency: string;
   toCurrency: string;
-  amount: string;
+  forexAmount: number;
 }
 
 export interface Quote {
-  fromCurrency: string;
-  toCurrency: string;
-  fromAmount: string;
-  toAmount: string;
-  rate: string;
-  fee: string;
-  estimatedTotal: string;
-  expiresAt: string;
+  krwAmount: number;
+  appliedRate: number;
 }
 
 export interface GetQuoteOutput {
@@ -158,13 +151,18 @@ export async function getQuoteAction(input: GetQuoteInput): Promise<GetQuoteOutp
     throw new Error('로그인이 필요합니다.');
   }
   
-  const response = await fetch(`${process.env.API_BASE_URL}/orders/quote`, {
-    method: 'POST',
+  // GET 요청으로 변경
+  const params = new URLSearchParams({
+    fromCurrency: input.fromCurrency,
+    toCurrency: input.toCurrency,
+    forexAmount: input.forexAmount.toString(),
+  });
+  
+  const response = await fetch(`${process.env.API_BASE_URL}/orders/quote?${params}`, {
+    method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
-    body: JSON.stringify(input),
   });
   
   if (!response.ok) {
@@ -186,22 +184,20 @@ export async function getQuoteAction(input: GetQuoteInput): Promise<GetQuoteOutp
 import { cookies } from 'next/headers';
 
 export interface CreateOrderInput {
+  exchangeRateId: number;
   fromCurrency: string;
   toCurrency: string;
-  amount: string;
+  forexAmount: number;
 }
 
 export interface Order {
-  id: string;
-  userId: string;
+  orderId: number;
   fromCurrency: string;
+  fromAmount: number;
   toCurrency: string;
-  fromAmount: string;
-  toAmount: string;
-  rate: string;
-  fee: string;
-  status: string;
-  createdAt: string;
+  toAmount: number;
+  appliedRate: number;
+  orderedAt: string;
 }
 
 export interface CreateOrderOutput {
@@ -286,6 +282,9 @@ export function useExchangeQuoteMutation() {
     mutationFn: (input: GetQuoteInput) => getQuoteAction(input),
   });
 }
+
+// Note: getQuoteAction은 GET 요청이지만 React Query에서는 
+// mutationFn으로 사용 가능 (조건부 쿼리 대신)
 ```
 
 #### 2.4 환전 실행 Hook
@@ -307,6 +306,9 @@ export function useCreateOrderMutation() {
     },
   });
 }
+
+// Note: 주문 생성 시 exchangeRateId가 필요하므로
+// UI에서 현재 환율 정보의 exchangeRateId를 전달해야 함
 ```
 
 ---
