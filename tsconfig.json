@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/client/*"]
+      "@/*": ["./src/client/*"],
+      "@app/*": ["./app/*"]
     }
   },
   "include": [

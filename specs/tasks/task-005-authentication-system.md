@@ -43,40 +43,44 @@ interface LoginInput {
 }
 
 interface LoginOutput {
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
+  memberId: number;
 }
 
 export async function loginAction(input: LoginInput): Promise<LoginOutput> {
+  // 쿼리 파라미터로 변환
+  const params = new URLSearchParams();
+  params.append("request", JSON.stringify({ email: input.email }));
+
   // 외부 API 호출
-  const response = await fetch(`${process.env.API_BASE_URL}/auth/login`, {
+  const response = await fetch(`${process.env.API_BASE_URL}/auth/login?${params.toString()}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email: input.email }),
   });
-  
+
+  // 응답을 한 번만 읽기
+  const responseData = await response.json();
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || '로그인에 실패했습니다.');
+    // 에러 응답 처리
+    throw new Error(responseData.message || '로그인에 실패했습니다.');
   }
-  
-  const data = await response.json();
-  
+
+  // ApiResponse 포맷: { code, message, data }
+  const { memberId, token } = responseData.data;
+
   // HTTP-only cookie에 토큰 저장
-  cookies().set('auth-token', data.accessToken, {
+  const cookieStore = await cookies();
+  cookieStore.set('auth-token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7일
     path: '/',
   });
-  
-  return { user: data.user };
+
+  return { memberId };
 }
 ```
 
@@ -108,10 +112,12 @@ import { loginAction } from '@/app/actions/auth/login';
 
 export function useLoginMutation() {
   const router = useRouter();
-  
+
   return useMutation({
     mutationFn: (email: string) => loginAction({ email }),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // memberId를 활용하여 필요한 경우 사용자 정보 저장
+      console.log('Logged in with memberId:', data.memberId);
       router.push('/');
     },
     onError: (error: Error) => {

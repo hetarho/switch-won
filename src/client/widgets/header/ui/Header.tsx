@@ -4,6 +4,7 @@ import { Coins, ArrowLeftRight, History, LogOut, Menu } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/shared/ui'
 import { ThemeToggle } from '@/shared/ui/theme-toggle'
+import { useLogoutMutation } from '@/features/logout'
 
 interface HeaderProps {
   isAuthenticated?: boolean
@@ -11,6 +12,8 @@ interface HeaderProps {
 }
 
 export function Header({ isAuthenticated = false, currentPath = '/' }: HeaderProps) {
+  const logout = useLogoutMutation()
+  
   return (
     <header className="sticky top-0 z-sticky h-16 bg-white/80 dark:bg-secondary-900/80 backdrop-blur-md border-b border-secondary-200/50 dark:border-secondary-800/50 shadow-sm">
       <div className="container mx-auto h-full px-6 flex items-center justify-between">
@@ -58,9 +61,14 @@ export function Header({ isAuthenticated = false, currentPath = '/' }: HeaderPro
 
           {/* Logout Button (Desktop - Authenticated) */}
           {isAuthenticated && (
-            <Button variant="outline" className="gap-2 hidden md:flex">
+            <Button 
+              variant="outline" 
+              className="gap-2 hidden md:flex"
+              onClick={() => logout.mutate()}
+              disabled={logout.isPending}
+            >
               <LogOut className="w-4 h-4" />
-              <span className="hidden lg:inline">로그아웃</span>
+              <span className="hidden lg:inline">{logout.isPending ? '로그아웃 중...' : '로그아웃'}</span>
             </Button>
           )}
 

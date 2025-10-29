@@ -1,9 +1,19 @@
-'use client'
+"use client";
 
-import { Rss } from 'lucide-react'
-import { Input, Button, Card, CardContent } from '@/shared/ui'
+import { useState } from "react";
+import { Rss } from "lucide-react";
+import { Input, Button, Card, CardContent } from "@/shared/ui";
+import { useLoginMutation } from "@/features/login";
 
 export function LoginPage() {
+  const [email, setEmail] = useState("");
+  const login = useLoginMutation();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    login.mutate(email);
+  };
+
   return (
     <div className="min-h-screen bg-surface-secondary flex items-center justify-center p-4">
       <div className="max-w-md w-full">
@@ -25,11 +35,11 @@ export function LoginPage() {
         {/* 폼 카드 */}
         <Card className="border-border-primary shadow-xl bg-surface-primary">
           <CardContent className="pt-8 pb-8 px-8">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* 이메일 입력 */}
               <div className="space-y-2">
-                <label 
-                  htmlFor="email" 
+                <label
+                  htmlFor="email"
                   className="block text-sm font-medium text-text-secondary"
                 >
                   이메일 주소를 입력해주세요.
@@ -37,8 +47,11 @@ export function LoginPage() {
                 <Input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="example@email.com"
                   data-testid="email-input"
+                  disabled={login.isPending}
                   className="h-12 text-base border-border-primary focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 bg-surface-primary"
                 />
               </div>
@@ -46,11 +59,19 @@ export function LoginPage() {
               {/* 로그인 버튼 */}
               <Button
                 type="submit"
-                className="w-full h-12 bg-surface-invert hover:opacity-90 text-text-invert font-semibold text-base shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                disabled={login.isPending}
+                className="w-full h-12 bg-surface-invert hover:opacity-90 text-text-invert font-semibold text-base shadow-lg transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 data-testid="login-button"
               >
-                로그인 하기
+                {login.isPending ? "로그인 중..." : "로그인 하기"}
               </Button>
+
+              {/* 에러 메시지 */}
+              {login.error && (
+                <p className="text-sm text-red-500 text-center">
+                  {login.error.message}
+                </p>
+              )}
 
               {/* 안내 문구 */}
               <p className="text-xs text-text-tertiary text-center mt-4">
@@ -61,6 +82,5 @@ export function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
-
