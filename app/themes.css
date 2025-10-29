@@ -13,13 +13,13 @@
   --color-primary-200: oklch(0.924 0.12 95.746);
   --color-primary-300: oklch(0.879 0.169 91.605);
   --color-primary-400: oklch(0.828 0.189 84.429);
-  --color-primary-500: oklch(0.769 0.188 70.08);      /* Main Brand Color */
-  --color-primary-600: oklch(0.666 0.179 58.318);      /* Hover State */
+  --color-primary-500: oklch(0.769 0.188 70.08); /* Main Brand Color */
+  --color-primary-600: oklch(0.666 0.179 58.318); /* Hover State */
   --color-primary-700: oklch(0.555 0.163 48.998);
   --color-primary-800: oklch(0.473 0.137 46.201);
   --color-primary-900: oklch(0.414 0.112 45.904);
   --color-primary-950: oklch(0.279 0.077 45.635);
-  
+
   /* ===== Secondary Colors - Navy (짙은 남색 계열) ===== */
   --color-secondary-50: oklch(0.984 0.003 247.858);
   --color-secondary-100: oklch(0.967 0.007 247.896);
@@ -30,28 +30,28 @@
   --color-secondary-600: oklch(0.446 0.043 257.281);
   --color-secondary-700: oklch(0.369 0.044 257.287);
   --color-secondary-800: oklch(0.283 0.042 265.755);
-  --color-secondary-900: oklch(0.205 0.044 264.695);   /* Main Text Color */
+  --color-secondary-900: oklch(0.205 0.044 264.695); /* Main Text Color */
   --color-secondary-950: oklch(0.135 0.029 270.423);
-  
+
   /* ===== Semantic Colors ===== */
-  --color-success: oklch(0.723 0.219 149.579);    /* green-500 */
-  --color-warning: oklch(0.795 0.184 86.047);     /* yellow-500 */
-  --color-error: oklch(0.637 0.237 25.331);       /* red-500 */
-  --color-info: oklch(0.637 0.215 264.052);       /* blue-500 */
-  
+  --color-success: oklch(0.723 0.219 149.579); /* green-500 */
+  --color-warning: oklch(0.795 0.184 86.047); /* yellow-500 */
+  --color-error: oklch(0.637 0.237 25.331); /* red-500 */
+  --color-info: oklch(0.637 0.215 264.052); /* blue-500 */
+
   /* ===== Semantic Tokens (Light Mode) ===== */
   --color-text-primary: var(--color-secondary-900);
   --color-text-secondary: var(--color-secondary-700);
   --color-text-tertiary: var(--color-secondary-600);
   --color-text-quaternary: var(--color-secondary-400);
   --color-text-invert: #ffffff;
-  
-  --color-surface-primary: #ffffff;
-  --color-surface-secondary: var(--color-secondary-50);
-  --color-surface-tertiary: var(--color-secondary-100);
+
+  --color-surface-primary: var(--color-secondary-50);
+  --color-surface-secondary: var(--color-secondary-100);
+  --color-surface-tertiary: var(--color-secondary-200);
   --color-surface-invert: var(--color-secondary-900);
   --color-surface-brand: var(--color-primary-500);
-  
+
   --color-border-primary: var(--color-secondary-200);
   --color-border-secondary: var(--color-secondary-100);
   --color-border-tertiary: var(--color-secondary-300);
@@ -60,20 +60,22 @@
 
 .dark {
   /* ===== Dark Mode Overrides ===== */
-  --color-text-primary: #ffffff;
+  --color-text-primary: var(--color-secondary-50);
   --color-text-secondary: var(--color-secondary-100);
   --color-text-tertiary: var(--color-secondary-300);
   --color-text-quaternary: var(--color-secondary-400);
   --color-text-invert: var(--color-secondary-900);
-  
-  --color-surface-primary: var(--color-secondary-950);
-  --color-surface-secondary: var(--color-secondary-900);
-  --color-surface-tertiary: var(--color-secondary-800);
-  --color-surface-invert: #ffffff;
+
+  /* 더 밝은 배경으로 계층감 향상 */
+  --color-surface-primary: var(--color-secondary-900);
+  --color-surface-secondary: var(--color-secondary-800);
+  --color-surface-tertiary: var(--color-secondary-700);
+  --color-surface-invert: var(--color-secondary-50);
   --color-surface-brand: var(--color-primary-400);
-  
-  --color-border-primary: var(--color-secondary-800);
-  --color-border-secondary: var(--color-secondary-900);
-  --color-border-tertiary: var(--color-secondary-700);
+
+  /* 더 명확한 보더로 요소 구분 강화 */
+  --color-border-primary: var(--color-secondary-700);
+  --color-border-secondary: var(--color-secondary-800);
+  --color-border-tertiary: var(--color-secondary-600);
   --color-border-brand: var(--color-primary-400);
 }

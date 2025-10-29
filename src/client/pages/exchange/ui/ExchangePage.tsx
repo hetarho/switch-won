@@ -1,16 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import {
-  TrendingUp,
-  TrendingDown,
-  ChevronDown,
-  Loader2,
-  ArrowDown,
-} from 'lucide-react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { ChevronDown, Loader2, ArrowDown } from 'lucide-react';
 import { Button, Input, Card } from '@/shared/ui';
-import { useWalletsQuery } from '@/entities/wallet';
-import { useExchangeRatesQuery } from '@/entities/exchange-rate';
+import { useWalletsQuery, Wallet } from '@/entities/wallet';
+import { useExchangeRatesQuery, ExchangeRate } from '@/entities/exchange-rate';
 import { useExchangeQuoteMutation } from '@/features/exchange-quote';
 import { useCreateOrderMutation } from '@/features/create-order';
 import { formatAmount } from '@/shared/utils/format/currency';
@@ -63,35 +57,38 @@ export function ExchangePage() {
   const quoteMutation = useExchangeQuoteMutation();
   const createOrderMutation = useCreateOrderMutation();
 
-  const wallets = walletsData?.wallets || [];
-  const rates = ratesData?.rates || [];
-
-  // 환율 찾기 (실제 API 구조에 맞게 수정)
-  const getRate = (currency: string) => {
-    return rates.find((r) => r.currency === currency);
-  };
+  const wallets = useMemo(() => walletsData?.wallets || [], [walletsData]);
+  const rates = useMemo(() => ratesData?.rates || [], [ratesData]);
+  const usdRate = useMemo(
+    () => rates.find((r) => r.currency === 'USD'),
+    [rates]
+  );
+  const jpyRate = useMemo(
+    () => rates.find((r) => r.currency === 'JPY'),
+    [rates]
+  );
 
   // 총 보유 자산 계산 (KRW 기준)
-  const calculateTotalAssets = () => {
+  const calculateTotalAssets = useMemo(() => {
     if (walletsData?.totalKrwBalance !== undefined) {
       return walletsData.totalKrwBalance;
     }
 
     // fallback: 직접 계산
     let total = 0;
-    wallets.forEach((wallet) => {
+    wallets?.forEach((wallet) => {
       const balance = wallet.balance;
       if (wallet.currency === 'KRW') {
         total += balance;
       } else {
-        const rate = getRate(wallet.currency);
+        const rate = rates.find((r) => r.currency === wallet.currency);
         if (rate) {
           total += balance * rate.rate;
         }
       }
     });
     return total;
-  };
+  }, [walletsData?.totalKrwBalance, wallets, rates]);
 
   // 견적 조회 (디바운스 처리)
   useEffect(() => {
@@ -119,7 +116,7 @@ export function ExchangePage() {
 
     // 환율 ID 찾기 (매입일 때는 선택한 통화의 환율을 사용)
     const rateCurrency = isSelling ? fromCurrency : fromCurrency;
-    const rate = getRate(rateCurrency);
+    const rate = rates.find((r) => r.currency === rateCurrency);
     if (!rate) {
       alert('환율 정보를 찾을 수 없습니다.');
       return;
@@ -141,187 +138,26 @@ export function ExchangePage() {
     }
   };
 
-  // 주요 환율 표시용 (USD, JPY)
-  const usdRate = getRate('USD');
-  const jpyRate = getRate('JPY');
-
   return (
     <div className="bg-surface-secondary min-h-screen p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_1fr]">
           {/* 좌측: 환율 정보 */}
           <aside>
-            <h2 className="text-text-primary mb-6 text-2xl font-bold">
-              환율 정보
-            </h2>
-
-            {/* USD 환율 카드 */}
-            {usdRate && (
-              <Card className="border-border-primary mb-4 border p-6 shadow-md">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-text-secondary text-sm">미국 달러</p>
-                    <div className="mt-1 flex items-baseline gap-2">
-                      <span className="text-text-primary text-3xl font-bold">
-                        {formatAmount(usdRate.rate)}
-                      </span>
-                      <span className="text-text-secondary text-lg">원</span>
-                    </div>
-                    <p className="text-text-tertiary mt-1 text-xs">
-                      1 USD 기준
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col items-end">
-                    <span className="text-text-tertiary text-xs">
-                      미국 달러
-                    </span>
-                    <div
-                      className={`mt-2 flex items-center gap-1 rounded-md px-2 py-1 ${
-                        usdRate.changePercentage >= 0
-                          ? 'bg-green-50 dark:bg-green-900/20'
-                          : 'bg-red-50 dark:bg-red-900/20'
-                      }`}
-                    >
-                      {usdRate.changePercentage >= 0 ? (
-                        <TrendingUp className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <TrendingDown className="h-4 w-4 text-red-600" />
-                      )}
-                      <span
-                        className={`text-sm font-semibold ${
-                          usdRate.changePercentage >= 0
-                            ? 'text-green-600'
-                            : 'text-red-600'
-                        }`}
-                      >
-                        {usdRate.changePercentage >= 0 ? '+' : ''}
-                        {usdRate.changePercentage.toFixed(2)}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {/* JPY 환율 카드 */}
-            {jpyRate && (
-              <Card className="border-border-primary mb-6 border p-6 shadow-md">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-text-secondary text-sm">일본 엔</p>
-                    <div className="mt-1 flex items-baseline gap-2">
-                      <span className="text-text-primary text-3xl font-bold">
-                        {formatAmount(jpyRate.rate)}
-                      </span>
-                      <span className="text-text-secondary text-lg">원</span>
-                    </div>
-                    <p className="text-text-tertiary mt-1 text-xs">
-                      1 JPY 기준
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col items-end">
-                    <span className="text-text-tertiary text-xs">일본 엔</span>
-                    <div
-                      className={`mt-2 flex items-center gap-1 rounded-md px-2 py-1 ${
-                        jpyRate.changePercentage >= 0
-                          ? 'bg-green-50 dark:bg-green-900/20'
-                          : 'bg-red-50 dark:bg-red-900/20'
-                      }`}
-                    >
-                      {jpyRate.changePercentage >= 0 ? (
-                        <TrendingUp className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <TrendingDown className="h-4 w-4 text-red-600" />
-                      )}
-                      <span
-                        className={`text-sm font-semibold ${
-                          jpyRate.changePercentage >= 0
-                            ? 'text-green-600'
-                            : 'text-red-600'
-                        }`}
-                      >
-                        {jpyRate.changePercentage >= 0 ? '+' : ''}
-                        {jpyRate.changePercentage.toFixed(2)}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {/* 로딩 상태 */}
-            {isRatesLoading && (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="text-text-tertiary h-6 w-6 animate-spin" />
-                <span className="text-text-tertiary ml-2">
-                  환율 정보를 불러오는 중...
-                </span>
-              </div>
-            )}
-
-            {/* 에러 상태 */}
-            {ratesError && (
-              <Card className="mb-4 border border-red-500 bg-red-50 p-6 dark:bg-red-900/20">
-                <p className="text-sm text-red-600">
-                  환율 정보를 불러올 수 없습니다: {ratesError.message}
-                </p>
-              </Card>
-            )}
-
-            {/* 데이터 없음 */}
-            {!isRatesLoading && !ratesError && rates.length === 0 && (
-              <Card className="border-border-primary mb-4 border p-6">
-                <p className="text-text-tertiary text-sm">
-                  환율 정보가 없습니다.
-                </p>
-              </Card>
-            )}
+            {/* 환율 정보 */}
+            <ExchangeRate
+              usdRate={usdRate}
+              jpyRate={jpyRate}
+              isLoading={isRatesLoading}
+              error={ratesError}
+            />
 
             {/* 내 지갑 */}
-            <h3 className="text-text-primary mt-8 mb-4 text-xl font-semibold">
-              내 지갑
-            </h3>
-
-            {isWalletsLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="text-text-tertiary h-6 w-6 animate-spin" />
-              </div>
-            ) : (
-              <Card className="border-border-primary mb-4 border p-6">
-                <div className="space-y-3">
-                  {wallets.map((wallet) => (
-                    <div
-                      key={wallet.currency}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-text-secondary text-sm">
-                        {wallet.currency}
-                      </span>
-                      <span className="text-text-primary text-lg font-semibold">
-                        {wallet.currency === 'USD'
-                          ? '$'
-                          : wallet.currency === 'JPY'
-                            ? '¥'
-                            : '₩'}{' '}
-                        {formatAmount(wallet.balance)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            {/* 총 보유 자산 */}
-            <div className="bg-surface-invert border-border-primary rounded-xl border p-6 shadow-lg">
-              <p className="text-text-invert text-sm opacity-80">
-                총 보유 자산
-              </p>
-              <p className="text-text-invert mt-2 text-3xl font-bold">
-                ₩ {formatAmount(calculateTotalAssets())}
-              </p>
-            </div>
+            <Wallet
+              isLoading={isWalletsLoading}
+              currencies={wallets}
+              totalKrwBalance={calculateTotalAssets}
+            />
           </aside>
 
           {/* 우측: 환전 폼 */}

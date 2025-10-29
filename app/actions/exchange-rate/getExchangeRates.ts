@@ -16,6 +16,7 @@ export interface ExchangeRatesData {
 }
 
 export async function getExchangeRatesAction(): Promise<ExchangeRatesData> {
+  
   const cookieStore = await cookies();
   const token = cookieStore.get("auth-token")?.value;
 

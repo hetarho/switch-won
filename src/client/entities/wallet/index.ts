@@ -1,3 +1,2 @@
 export { useWalletsQuery } from './hooks/useWalletsQuery';
-
-export type { Wallet, WalletsData } from '@app/actions/wallet/getWallets';
+export { Wallet } from './ui/Wallet';
