@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers';
+import { handleAuthError } from '@server/utils/handleAuthError';
 
 export interface CreateOrderInput {
   exchangeRateId: number;
@@ -42,6 +43,7 @@ export async function createOrderAction(input: CreateOrderInput): Promise<Create
   
   if (!response.ok) {
     const error = await response.json();
+    await handleAuthError(response, error);
     throw new Error(error.message || '환전 실행에 실패했습니다.');
   }
   

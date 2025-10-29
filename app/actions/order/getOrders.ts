@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { handleAuthError } from '@server/utils/handleAuthError';
 
 export interface Order {
   orderId: number;
@@ -34,6 +35,7 @@ export async function getOrdersAction(): Promise<OrdersData> {
 
   if (!response.ok) {
     const error = await response.json();
+    await handleAuthError(response, error);
     throw new Error(error.message || "환전 내역 조회에 실패했습니다.");
   }
 

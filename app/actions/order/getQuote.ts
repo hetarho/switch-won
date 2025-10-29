@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers';
+import { handleAuthError } from '@server/utils/handleAuthError';
 
 export interface GetQuoteInput {
   fromCurrency: string;
@@ -41,6 +42,7 @@ export async function getQuoteAction(input: GetQuoteInput): Promise<GetQuoteOutp
   
   if (!response.ok) {
     const error = await response.json();
+    await handleAuthError(response, error);
     throw new Error(error.message || '견적 조회에 실패했습니다.');
   }
   
