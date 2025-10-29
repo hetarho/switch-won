@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { ApiError } from "@/shared/types";
 
 interface LoginInput {
   email: string;
@@ -28,7 +29,9 @@ export async function loginAction(input: LoginInput): Promise<LoginOutput> {
 
   if (!response.ok) {
     // 에러 응답 처리
-    throw new Error(responseData.message || "로그인에 실패했습니다.");
+    const errorCode = responseData.code || 'BAD_REQUEST';
+    const errorMessage = responseData.message || "로그인에 실패했습니다.";
+    throw new ApiError(errorCode, errorMessage, responseData.data || null);
   }
 
   // ApiResponse 포맷: { code, message, data }

@@ -430,27 +430,47 @@ export function useWalletsQuery() {
 }
 ```
 
-### 공통 에러 처리 Hook
+### Next.js 에러 바운더리
+
+Next.js의 공식 에러 바운더리 방식을 사용합니다. 자동으로 에러를 캐치하고 처리합니다.
 
 ```typescript
-// src/shared/hooks/useErrorHandler.ts
-import { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+// app/error.tsx
+'use client'
 
-export function useErrorHandler() {
-  const router = useRouter();
-  
-  const handleError = useCallback((error: Error) => {
-    if (error.message.includes('로그인이 필요합니다')) {
-      router.push('/login');
-      return;
-    }
-    
-    // 토스트 알림 등으로 에러 표시
-    console.error('Error:', error.message);
-  }, [router]);
-  
-  return { handleError };
+import { useEffect } from 'react';
+import { Button } from '@/shared/ui';
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error('Error:', error);
+  }, [error]);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-6">
+      <h2 className="text-2xl font-bold mb-4">알 수 없는 오류가 발생했습니다</h2>
+      <p className="text-muted-foreground mb-4 text-center">
+        {error.message || '페이지를 새로고침해주세요.'}
+      </p>
+      {error.digest && (
+        <p className="text-sm text-muted-foreground mb-4">
+          에러 ID: {error.digest}
+        </p>
+      )}
+      <div className="flex gap-2">
+        <Button onClick={reset}>다시 시도</Button>
+        <Button onClick={() => window.location.reload()} variant="outline">
+          새로고침
+        </Button>
+      </div>
+    </div>
+  );
 }
 ```
 
