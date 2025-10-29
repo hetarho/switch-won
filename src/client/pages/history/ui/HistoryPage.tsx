@@ -1,24 +1,85 @@
 'use client'
 
-import { History as HistoryIcon } from 'lucide-react'
-import { Card } from '@/shared/ui'
-
-// Mock data
-const mockHistory = [
-  { id: 10, date: '2025-10-05 00:00:00', buyAmount: 32.50, rate: 1383.07, sellAmount: 51976 },
-  { id: 9, date: '2025-10-05 00:00:00', buyAmount: 500, rate: 1383.07, sellAmount: 699690 },
-  { id: 8, date: '2025-10-05 00:00:00', buyAmount: 325.50, rate: 1609.70, sellAmount: 454734 },
-  { id: 7, date: '2025-10-05 00:00:00', buyAmount: 325.50, rate: 1609.70, sellAmount: 454734 },
-  { id: 6, date: '2025-10-05 00:00:00', buyAmount: 325.50, rate: 1383.07, sellAmount: 454734 },
-  { id: 5, date: '2025-10-05 00:00:00', buyAmount: 325.50, rate: 942.58, sellAmount: 454734 },
-  { id: 4, date: '2025-10-05 00:00:00', buyAmount: 325.50, rate: 942.58, sellAmount: 454734 },
-  { id: 3, date: '2025-10-05 00:00:00', buyAmount: 41698, rate: 942.58, sellAmount: 30.00 },
-  { id: 2, date: '2025-10-05 00:00:00', buyAmount: 41698, rate: 1383.07, sellAmount: 30.00 },
-  { id: 1, date: '2025-10-05 00:00:00', buyAmount: 325.50, rate: 1383.07, sellAmount: 454734 },
-]
+import { History as HistoryIcon, RefreshCw } from 'lucide-react'
+import { Card, Button } from '@/shared/ui'
+import { useOrdersQuery } from '@/entities/order'
+import { formatCurrency, formatAmount } from '@/shared/utils/format/currency'
+import { formatDateTime } from '@/shared/utils/format/date'
 
 export function HistoryPage() {
-  const hasHistory = mockHistory.length > 0
+  const { data, isLoading, error, refetch } = useOrdersQuery()
+  
+  const orders = data?.orders || []
+  const hasHistory = orders.length > 0
+
+  // 로딩 상태
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-surface-secondary p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-text-primary mb-3">
+              환전 내역
+            </h1>
+            <p className="text-lg text-text-secondary">
+              환전 내역을 확인하실 수 있어요.
+            </p>
+          </div>
+
+          <div className="bg-surface-primary border border-border-primary rounded-2xl shadow-xl overflow-hidden">
+            <div className="py-20 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-surface-secondary rounded-full flex items-center justify-center animate-pulse">
+                <HistoryIcon className="w-8 h-8 text-text-tertiary" />
+              </div>
+              <p className="text-lg font-semibold text-text-primary mb-2">
+                내역을 불러오는 중...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="min-h-screen bg-surface-secondary p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-text-primary mb-3">
+              환전 내역
+            </h1>
+            <p className="text-lg text-text-secondary">
+              환전 내역을 확인하실 수 있어요.
+            </p>
+          </div>
+
+          <div className="bg-surface-primary border border-border-primary rounded-2xl shadow-xl overflow-hidden">
+            <div className="py-20 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <HistoryIcon className="w-8 h-8 text-red-600" />
+              </div>
+              <p className="text-lg font-semibold text-text-primary mb-2">
+                내역을 불러올 수 없습니다
+              </p>
+              <p className="text-sm text-text-secondary mb-4">
+                {error instanceof Error ? error.message : '네트워크 오류가 발생했습니다.'}
+              </p>
+              <Button 
+                onClick={() => refetch()} 
+                variant="outline"
+                data-testid="retry-button"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                재시도
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-surface-secondary p-6 lg:p-8">
@@ -60,25 +121,26 @@ export function HistoryPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-primary">
-                    {mockHistory.map((item) => (
+                    {orders.map((order) => (
                       <tr 
-                        key={item.id}
+                        key={order.orderId}
                         className="hover:bg-surface-secondary transition-colors"
+                        data-testid="order-row"
                       >
                         <td className="px-6 py-4 text-sm text-text-primary font-medium">
-                          {item.id}
+                          {order.orderId}
                         </td>
                         <td className="px-6 py-4 text-sm text-text-secondary">
-                          {item.date}
+                          {formatDateTime(order.orderedAt)}
                         </td>
                         <td className="px-6 py-4 text-sm text-text-primary text-right font-semibold">
-                          {item.buyAmount.toLocaleString()}
+                          {formatCurrency(order.fromAmount, order.fromCurrency)}
                         </td>
                         <td className="px-6 py-4 text-sm text-text-secondary text-right">
-                          {item.rate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {formatAmount(order.appliedRate.toString())}
                         </td>
                         <td className="px-6 py-4 text-sm text-text-primary text-right font-semibold">
-                          {item.sellAmount.toLocaleString()}
+                          {formatCurrency(order.toAmount, order.toCurrency)}
                         </td>
                       </tr>
                     ))}
@@ -88,14 +150,14 @@ export function HistoryPage() {
 
               {/* Mobile Cards */}
               <div className="lg:hidden p-4 space-y-4">
-                {mockHistory.map((item) => (
-                  <Card key={item.id} className="p-4 border border-border-primary">
+                {orders.map((order) => (
+                  <Card key={order.orderId} className="p-4 border border-border-primary" data-testid="order-card">
                     <div className="flex justify-between items-start mb-3">
                       <span className="text-xs font-medium text-text-secondary">
                         거래 ID
                       </span>
                       <span className="text-sm font-semibold text-text-primary">
-                        {item.id}
+                        {order.orderId}
                       </span>
                     </div>
                     
@@ -105,7 +167,7 @@ export function HistoryPage() {
                           거래 일시
                         </span>
                         <span className="text-xs text-text-primary">
-                          {item.date}
+                          {formatDateTime(order.orderedAt)}
                         </span>
                       </div>
                       
@@ -114,7 +176,7 @@ export function HistoryPage() {
                           매수 금액
                         </span>
                         <span className="text-sm font-semibold text-text-primary">
-                          {item.buyAmount.toLocaleString()}
+                          {formatCurrency(order.fromAmount, order.fromCurrency)}
                         </span>
                       </div>
                       
@@ -123,7 +185,7 @@ export function HistoryPage() {
                           체결 환율
                         </span>
                         <span className="text-xs text-text-primary">
-                          {item.rate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {formatAmount(order.appliedRate.toString())}
                         </span>
                       </div>
                       
@@ -132,7 +194,7 @@ export function HistoryPage() {
                           매도 금액
                         </span>
                         <span className="text-sm font-semibold text-primary-600">
-                          {item.sellAmount.toLocaleString()}
+                          {formatCurrency(order.toAmount, order.toCurrency)}
                         </span>
                       </div>
                     </div>
@@ -142,12 +204,12 @@ export function HistoryPage() {
             </>
           ) : (
             // Empty State
-            <div className="py-20 text-center">
+            <div className="py-20 text-center" data-testid="empty-state">
               <div className="w-16 h-16 mx-auto mb-4 bg-surface-secondary rounded-full flex items-center justify-center">
                 <HistoryIcon className="w-8 h-8 text-text-tertiary" />
               </div>
               <p className="text-lg font-semibold text-text-primary mb-2">
-                환전 내역이 없습니다
+                아직 환전 내역이 없습니다
               </p>
               <p className="text-sm text-text-secondary">
                 첫 환전을 시작해보세요

@@ -34,7 +34,7 @@ export async function getOrdersAction(): Promise<OrdersData> {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || "주문 조회에 실패했습니다.");
+    throw new Error(error.message || "환전 내역 조회에 실패했습니다.");
   }
 
   const data = await response.json();
