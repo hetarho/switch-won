@@ -17,7 +17,8 @@
     "cypress:run:firefox": "cypress run --browser firefox",
     "cypress:run:edge": "cypress run --browser edge",
     "test:e2e": "start-server-and-test dev http://localhost:3000 cypress:run",
-    "test:e2e:open": "start-server-and-test dev http://localhost:3000 cypress:open"
+    "test:e2e:open": "start-server-and-test dev http://localhost:3000 cypress:open",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
@@ -45,6 +46,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "jsdom": "^27.0.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.7.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.0.4"
