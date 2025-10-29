@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo, useCallback, ChangeEvent } from 'react';
 import { Loader2, ArrowDown } from 'lucide-react';
 import {
   Button,
@@ -75,25 +75,27 @@ export function ExchangePage() {
       }
     });
     return total;
-  }, [walletsData?.totalKrwBalance, wallets, rates]);
+  }, [walletsData, wallets, rates]);
 
-  // 견적 조회 (디바운스 처리)
-  useEffect(() => {
-    if (!amount || parseFloat(amount) <= 0) {
-      return;
-    }
+  // 견적 조회 함수
+  const handleAmountChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>, debounced?: boolean) => {
+      const value = e.target.value;
 
-    const timer = setTimeout(() => {
-      quoteMutation.mutate({
-        fromCurrency: actualFromCurrency,
-        toCurrency,
-        forexAmount: parseFloat(amount),
-      });
-    }, 500);
+      // 항상 상태 업데이트 (즉시 UI 반영)
+      setAmount(value);
 
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, actualFromCurrency, toCurrency]);
+      // 디바운스된 호출에서만 API 호출
+      if (debounced && value && parseFloat(value) > 0) {
+        quoteMutation.mutate({
+          fromCurrency: actualFromCurrency,
+          toCurrency,
+          forexAmount: parseFloat(value),
+        });
+      }
+    },
+    [actualFromCurrency, toCurrency, quoteMutation]
+  );
 
   // 환전 실행
   const handleExchange = async () => {
@@ -170,7 +172,11 @@ export function ExchangePage() {
                 </SelectTrigger>
                 <SelectContent className="bg-surface-primary">
                   {rates.map((rate) => (
-                    <SelectItem key={rate.currency} value={rate.currency} className="hover:bg-surface-secondary">
+                    <SelectItem
+                      key={rate.currency}
+                      value={rate.currency}
+                      className="hover:bg-surface-secondary"
+                    >
                       <div className="flex w-full items-center gap-3">
                         <span className="text-2xl">
                           {rate.currency === 'USD'
@@ -232,10 +238,12 @@ export function ExchangePage() {
                 </label>
                 <div className="relative">
                   <Input
+                    allowDebouncing={true}
+                    delay={300}
                     type="number"
                     placeholder="금액을 입력하세요"
                     value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={handleAmountChange}
                     className="h-14 pr-24 text-right text-2xl font-semibold"
                   />
                   <div className="text-text-tertiary absolute top-1/2 right-4 -translate-y-1/2">

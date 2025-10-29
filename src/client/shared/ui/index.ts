@@ -1,6 +1,6 @@
 export { Button, buttonVariants } from './button';
 export { ThemeToggle } from './theme-toggle';
-export { Input } from './input';
+export { Input, type InputProps } from './input';
 export {
   Card,
   CardContent,
