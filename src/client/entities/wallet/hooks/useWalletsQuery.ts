@@ -9,4 +9,3 @@ export function useWalletsQuery() {
     retry: 3,
   });
 }
-

@@ -87,4 +87,3 @@ describe('validateEmail', () => {
     expect(validateEmail(' test@example.com ').isValid).toBe(false);
   });
 });
-

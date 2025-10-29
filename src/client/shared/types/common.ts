@@ -19,13 +19,13 @@ export type Currency = 'KRW' | 'USD' | 'EUR' | 'JPY' | 'CNY';
 export interface CurrencyInfo {
   /** 통화 코드 */
   code: Currency;
-  
+
   /** 통화 이름 */
   name: string;
-  
+
   /** 통화 심볼 */
   symbol: string;
-  
+
   /** 소수점 자릿수 */
   decimals: number;
 }
@@ -65,4 +65,3 @@ export const CURRENCIES: Record<Currency, CurrencyInfo> = {
     decimals: 2,
   },
 };
-

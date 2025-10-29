@@ -1,9 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createOrderAction, CreateOrderInput } from "@app/actions/order/createOrder";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  createOrderAction,
+  CreateOrderInput,
+} from '@app/actions/order/createOrder';
 
 export function useCreateOrderMutation() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (input: CreateOrderInput) => createOrderAction(input),
     onSuccess: () => {
@@ -13,4 +16,3 @@ export function useCreateOrderMutation() {
     },
   });
 }
-

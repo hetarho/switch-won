@@ -11,4 +11,3 @@ export function useExchangeRatesQuery() {
     retry: 3,
   });
 }
-

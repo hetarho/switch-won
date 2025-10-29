@@ -4,7 +4,7 @@ import { logoutAction } from '@app/actions/auth/logout';
 
 export function useLogoutMutation() {
   const router = useRouter();
-  
+
   return useMutation({
     mutationFn: logoutAction,
     onSuccess: () => {
@@ -15,4 +15,3 @@ export function useLogoutMutation() {
     },
   });
 }
-

@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import { getQuoteAction, GetQuoteInput } from "@app/actions/order/getQuote";
+import { useMutation } from '@tanstack/react-query';
+import { getQuoteAction, GetQuoteInput } from '@app/actions/order/getQuote';
 
 export function useExchangeQuoteMutation() {
   return useMutation({
