@@ -2,12 +2,12 @@
 
 import { History as HistoryIcon, RefreshCw } from 'lucide-react';
 import { Card, Button } from '@/shared/ui';
-import { useOrdersQuery } from '@/entities/order';
+import { useExchangeOrdersQuery } from '@/entities/exchange-order';
 import { formatCurrency, formatAmount } from '@/shared/utils/format/currency';
 import { formatDateTime } from '@/shared/utils/format/date';
 
 export function HistoryPage() {
-  const { data, isLoading, error, refetch } = useOrdersQuery();
+  const { data, isLoading, error, refetch } = useExchangeOrdersQuery();
 
   const orders = data?.orders || [];
   const hasHistory = orders.length > 0;

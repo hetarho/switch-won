@@ -1,3 +1,5 @@
+'use client';
+
 import { debounce } from 'es-toolkit';
 import { cn } from '@/shared/utils/index';
 import {
