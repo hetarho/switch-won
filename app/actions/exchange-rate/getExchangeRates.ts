@@ -41,7 +41,6 @@ export async function getExchangeRatesAction(): Promise<ExchangeRatesData> {
   }
 
   const data = await response.json();
-  console.log(data.data);
   // API 응답을 내부 구조로 변환
   const rates = data.data || [];
   const updatedAt = rates.length > 0 ? rates[0].applyDateTime : new Date().toISOString();

@@ -12,7 +12,6 @@ interface LoginOutput {
 }
 
 export async function loginAction(input: LoginInput): Promise<LoginOutput> {
-  console.log(`${process.env.API_BASE_URL}/auth/login?email=${input.email}`);
   // 외부 API 호출
   const response = await fetch(
     `${process.env.API_BASE_URL}/auth/login?email=${input.email}`,

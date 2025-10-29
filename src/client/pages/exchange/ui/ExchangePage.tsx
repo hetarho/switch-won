@@ -17,8 +17,13 @@ export function ExchangePage() {
   const selectRef = useRef<HTMLDivElement>(null)
   
   // 매입/매도에 따른 통화 방향 결정
+  // 매도: 선택한 통화 -> KRW
+  // 매입: KRW -> 선택한 통화
   const toCurrency = isSelling ? 'KRW' : fromCurrency
   const actualFromCurrency = isSelling ? fromCurrency : 'KRW'
+  
+  // 입력 필드 라벨 및 통화 표시용
+  const inputCurrency = fromCurrency // 항상 선택한 통화를 입력
   
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -151,9 +156,10 @@ export function ExchangePage() {
                         {formatAmount(usdRate.rate)}
                       </span>
                       <span className="text-lg text-text-secondary">
-                        KRW
+                        원
                       </span>
                     </div>
+                    <p className="text-xs text-text-tertiary mt-1">1 USD 기준</p>
                   </div>
                   
                   <div className="flex flex-col items-end">
@@ -190,9 +196,10 @@ export function ExchangePage() {
                         {formatAmount(jpyRate.rate)}
                       </span>
                       <span className="text-lg text-text-secondary">
-                        KRW
+                        원
                       </span>
                     </div>
+                    <p className="text-xs text-text-tertiary mt-1">1 JPY 기준</p>
                   </div>
                   
                   <div className="flex flex-col items-end">
@@ -323,8 +330,8 @@ export function ExchangePage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-semibold">{formatAmount(rate.rate)}</div>
-                            <div className="text-xs text-text-tertiary">KRW</div>
+                            <div className="font-semibold">{formatAmount(rate.rate)} 원</div>
+                            <div className="text-xs text-text-tertiary">1 {rate.currency} 기준</div>
                           </div>
                         </button>
                       ))}
@@ -354,7 +361,7 @@ export function ExchangePage() {
               {/* 매도/매입 금액 */}
               <div className="mt-6">
                 <label className="block text-sm font-medium text-text-secondary mb-2">
-                  {isSelling ? '매도' : '매입'} 금액
+                  {isSelling ? '매도 금액' : '매수 금액'}
                 </label>
                 <div className="relative">
                   <Input
@@ -365,7 +372,7 @@ export function ExchangePage() {
                     className="h-14 text-right pr-24 text-2xl font-semibold"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 text-text-tertiary">
-                    {actualFromCurrency} 입력
+                    {inputCurrency} 입력
                   </div>
                 </div>
               </div>
@@ -380,7 +387,7 @@ export function ExchangePage() {
               {/* 환전 견적 */}
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-2">
-                  받을 {toCurrency}
+                  {isSelling ? '받을 원화' : '필요한 원화'}
                 </label>
                 <div className="bg-surface-secondary border border-border-primary rounded-xl p-4">
                   <div className="text-right">
@@ -392,7 +399,7 @@ export function ExchangePage() {
                           {formatAmount(quoteMutation.data.quote.krwAmount)}
                         </span>
                         <span className="text-lg text-text-secondary ml-2">
-                          {toCurrency} 받으실거예요
+                          {isSelling ? '원 받으실거예요' : '원 필요해요'}
                         </span>
                       </>
                     ) : (
@@ -409,7 +416,7 @@ export function ExchangePage() {
                 <div className="flex items-center justify-center gap-2 text-text-secondary my-6">
                   <span className="text-sm">적용 환율</span>
                   <span className="font-semibold text-text-primary">
-                    1 {actualFromCurrency} = {formatAmount(quoteMutation.data.quote.appliedRate)} {toCurrency}
+                    1 {inputCurrency} = {formatAmount(quoteMutation.data.quote.appliedRate)} KRW
                   </span>
                 </div>
               )}
