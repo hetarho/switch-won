@@ -10,3 +10,15 @@ export {
   CardTitle,
 } from './card';
 export { Skeleton } from './skeleton';
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from './select';

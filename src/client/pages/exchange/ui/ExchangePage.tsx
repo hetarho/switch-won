@@ -1,8 +1,17 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { ChevronDown, Loader2, ArrowDown } from 'lucide-react';
-import { Button, Input, Card } from '@/shared/ui';
+import { useState, useEffect, useMemo } from 'react';
+import { Loader2, ArrowDown } from 'lucide-react';
+import {
+  Button,
+  Input,
+  Card,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui';
 import { useWalletsQuery, Wallet } from '@/entities/wallet';
 import { useExchangeRatesQuery, ExchangeRate } from '@/entities/exchange-rate';
 import { useExchangeQuoteMutation } from '@/features/exchange-quote';
@@ -13,8 +22,6 @@ export function ExchangePage() {
   const [fromCurrency, setFromCurrency] = useState('USD');
   const [amount, setAmount] = useState('');
   const [isSelling, setIsSelling] = useState(true); // true: 매도, false: 매입
-  const [showCurrencySelect, setShowCurrencySelect] = useState(false);
-  const selectRef = useRef<HTMLDivElement>(null);
 
   // 매입/매도에 따른 통화 방향 결정
   // 매도: 선택한 통화 -> KRW
@@ -24,26 +31,6 @@ export function ExchangePage() {
 
   // 입력 필드 라벨 및 통화 표시용
   const inputCurrency = fromCurrency; // 항상 선택한 통화를 입력
-
-  // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        selectRef.current &&
-        !selectRef.current.contains(event.target as Node)
-      ) {
-        setShowCurrencySelect(false);
-      }
-    };
-
-    if (showCurrencySelect) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showCurrencySelect]);
 
   // 데이터 조회
   const { data: walletsData, isLoading: isWalletsLoading } = useWalletsQuery();
@@ -164,79 +151,57 @@ export function ExchangePage() {
           <main>
             <Card className="border-border-primary border p-8 shadow-xl">
               {/* 통화 선택 */}
-              <div className="relative" ref={selectRef}>
-                <Button
-                  variant="outline"
-                  className="h-14 w-full justify-between"
-                  onClick={() => setShowCurrencySelect(!showCurrencySelect)}
-                >
-                  <div className="text-text-primary flex items-center gap-3">
-                    <span className="text-2xl">
-                      {fromCurrency === 'USD'
-                        ? '🇺🇸'
-                        : fromCurrency === 'JPY'
-                          ? '🇯🇵'
-                          : '🇰🇷'}
-                    </span>
-                    <span className="text-lg font-semibold">
-                      {fromCurrency} 환전하기
-                    </span>
-                  </div>
-                  <ChevronDown
-                    className={`h-5 w-5 transition-transform ${
-                      showCurrencySelect ? 'rotate-180' : ''
-                    }`}
-                  />
-                </Button>
-
-                {/* 드롭다운 메뉴 */}
-                {showCurrencySelect && (
-                  <div className="bg-surface-primary border-border-primary absolute top-16 right-0 left-0 z-10 rounded-lg border shadow-lg">
-                    <div className="p-2">
-                      {rates.map((rate) => (
-                        <button
-                          key={rate.currency}
-                          onClick={() => {
-                            setFromCurrency(rate.currency);
-                            setShowCurrencySelect(false);
-                          }}
-                          className={`hover:bg-surface-secondary flex w-full items-center gap-3 rounded-md px-4 py-3 transition-colors ${
-                            fromCurrency === rate.currency
-                              ? 'bg-surface-secondary'
-                              : ''
-                          }`}
-                        >
-                          <span className="text-2xl">
-                            {rate.currency === 'USD'
-                              ? '🇺🇸'
-                              : rate.currency === 'JPY'
-                                ? '🇯🇵'
-                                : '🇰🇷'}
-                          </span>
-                          <div className="flex-1 text-left">
-                            <div className="font-semibold">{rate.currency}</div>
-                            <div className="text-text-tertiary text-sm">
-                              {rate.currency === 'USD'
-                                ? '미국 달러'
-                                : rate.currency === 'JPY'
-                                  ? '일본 엔'
-                                  : '대한민국 원'}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-semibold">
-                              {formatAmount(rate.rate)} 원
-                            </div>
-                            <div className="text-text-tertiary text-xs">
-                              1 {rate.currency} 기준
-                            </div>
-                          </div>
-                        </button>
-                      ))}
+              <Select value={fromCurrency} onValueChange={setFromCurrency}>
+                <SelectTrigger className="h-14 w-full [&>svg]:h-5 [&>svg]:w-5">
+                  <SelectValue>
+                    <div className="text-text-primary flex items-center gap-3">
+                      <span className="text-2xl">
+                        {fromCurrency === 'USD'
+                          ? '🇺🇸'
+                          : fromCurrency === 'JPY'
+                            ? '🇯🇵'
+                            : '🇰🇷'}
+                      </span>
+                      <span className="text-lg font-semibold">
+                        {fromCurrency} 환전하기
+                      </span>
                     </div>
-                  </div>
-                )}
-              </div>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="bg-surface-primary">
+                  {rates.map((rate) => (
+                    <SelectItem key={rate.currency} value={rate.currency} className="hover:bg-surface-secondary">
+                      <div className="flex w-full items-center gap-3">
+                        <span className="text-2xl">
+                          {rate.currency === 'USD'
+                            ? '🇺🇸'
+                            : rate.currency === 'JPY'
+                              ? '🇯🇵'
+                              : '🇰🇷'}
+                        </span>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold">{rate.currency}</div>
+                          <div className="text-text-tertiary text-sm">
+                            {rate.currency === 'USD'
+                              ? '미국 달러'
+                              : rate.currency === 'JPY'
+                                ? '일본 엔'
+                                : '대한민국 원'}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-semibold">
+                            {formatAmount(rate.rate)} 원
+                          </div>
+                          <div className="text-text-tertiary text-xs">
+                            1 {rate.currency} 기준
+                          </div>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
               {/* 매도/매입 토글 */}
               <div className="mt-6 flex gap-2">
