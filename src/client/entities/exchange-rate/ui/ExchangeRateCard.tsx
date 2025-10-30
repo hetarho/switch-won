@@ -1,4 +1,5 @@
 import { Card, formatAmount } from '@/shared';
+import { formatRelativeTime } from '@/shared/utils/format/date';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 type ExchangeRateCardProps = {
@@ -6,6 +7,7 @@ type ExchangeRateCardProps = {
   currency: string;
   rate: number;
   changePercentage: number;
+  updatedAt?: string;
 };
 
 export function ExchangeRateCard({
@@ -13,9 +15,10 @@ export function ExchangeRateCard({
   currency,
   rate,
   changePercentage,
+  updatedAt,
 }: ExchangeRateCardProps) {
   return (
-    <Card className="border-border-primary mb-4 border p-6 shadow-md">
+    <Card className="border-border-primary mb-4 border p-6 shadow-md" data-testid="exchange-rate">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-text-secondary text-sm">{currencyName}</p>
@@ -26,6 +29,11 @@ export function ExchangeRateCard({
             <span className="text-text-secondary text-lg">원</span>
           </div>
           <p className="text-text-tertiary mt-1 text-xs">1 {currency} 기준</p>
+          {updatedAt && (
+            <p className="text-text-tertiary mt-1 text-xs" data-testid="exchange-rate-updated-time">
+              {formatRelativeTime(updatedAt)} 업데이트
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col items-end">

@@ -37,6 +37,7 @@ export function ExchangeRate({
             currency="USD"
             rate={usdRate.rate}
             changePercentage={usdRate.changePercentage}
+            updatedAt={usdRate.applyDateTime}
           />
         )
       )}
@@ -51,6 +52,7 @@ export function ExchangeRate({
             currency="JPY"
             rate={jpyRate.rate}
             changePercentage={jpyRate.changePercentage}
+            updatedAt={jpyRate.applyDateTime}
           />
         )
       )}

@@ -156,7 +156,7 @@ export function ExchangeOrderForm({
     <Card className="border-border-primary border p-8 shadow-xl">
       {/* 통화 선택 */}
       <Select value={fromCurrency} onValueChange={handleCurrencyChange}>
-        <SelectTrigger className="h-14 w-full [&>svg]:h-5 [&>svg]:w-5">
+        <SelectTrigger className="h-14 w-full [&>svg]:h-5 [&>svg]:w-5" data-testid="source-currency-select">
           <SelectValue>
             <div className="text-text-primary flex items-center gap-3">
               <span className="text-2xl">
@@ -247,6 +247,7 @@ export function ExchangeOrderForm({
             value={amount}
             onChange={handleAmountChange}
             className="h-14 pr-24 text-right text-2xl font-semibold"
+            data-testid="amount-input"
           />
           <div className="text-text-tertiary absolute top-1/2 right-4 -translate-y-1/2">
             {inputCurrency} 입력
@@ -266,7 +267,7 @@ export function ExchangeOrderForm({
         <label className="text-text-secondary mb-2 block text-sm font-medium">
           {isSelling ? '받을 원화' : '필요한 원화'}
         </label>
-        <div className="bg-surface-secondary border-border-primary flex h-18 items-center justify-center rounded-xl border p-4">
+        <div className="bg-surface-secondary border-border-primary flex h-18 items-center justify-center rounded-xl border p-4" data-testid="quote-result">
           <div className="text-right">
             {quote && amount && parseFloat(amount) > 0 ? (
               <>

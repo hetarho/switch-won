@@ -2,7 +2,7 @@ import { Card, Skeleton } from '@/shared';
 
 export function ExchangeRateCardSkeleton() {
   return (
-    <Card className="border-border-primary mb-4 border p-6 shadow-md">
+    <Card className="border-border-primary mb-4 border p-6 shadow-md" data-testid="exchange-rate-skeleton">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <Skeleton className="mb-2 h-5 w-24" />

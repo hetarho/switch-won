@@ -24,10 +24,10 @@ export function Wallet({
       <h3 className="text-text-primary mt-8 mb-4 text-xl font-semibold">
         내 지갑
       </h3>
-      <Card className="border-border-primary mb-4 border p-6">
+      <Card className="border-border-primary mb-4 border p-6" data-testid="wallet">
         <div className="space-y-3">
           {isLoading ? (
-            <>
+            <div data-testid="wallet-skeleton">
               <div className="flex items-center justify-between">
                 <Skeleton className="h-4 w-12" />
                 <Skeleton className="h-6 w-24" />
@@ -40,14 +40,14 @@ export function Wallet({
                 <Skeleton className="h-4 w-12" />
                 <Skeleton className="h-6 w-24" />
               </div>
-            </>
+            </div>
           ) : (
             currencies.map(({ balance, currency, priceDifference, priceDifferencePercent }) => {
               const hasPriceData = priceDifference !== undefined && priceDifferencePercent !== undefined;
               const isProfit = hasPriceData && priceDifference! > 0;
               
               return (
-                <div key={currency} className="space-y-1">
+                <div key={currency} className="space-y-1" data-testid="wallet-item">
                   <div className="flex items-center justify-between">
                     <span className="text-text-secondary text-sm">{currency}</span>
                     <span className="text-text-primary text-lg font-semibold">
