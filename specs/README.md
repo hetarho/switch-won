@@ -273,9 +273,8 @@ specs/
 │   └── 03-non-functional.md     # 비기능 요구사항
 ├── design/                      # 2단계: 설계 명세
 │   ├── architecture.md          # 아키텍처 설계
-│   ├── api-spec.md              # API 명세
-│   ├── data-models.md           # 데이터 모델
-│   └── ui-components.md         # UI 컴포넌트 설계
+│   ├── api-spec.md              # API 명세 (Server Actions 가이드)
+│   └── data-models.md           # 데이터 모델
 └── tasks/                       # 3단계: 작업 명세
     ├── feature-001-auth.md      # 인증 기능 작업 명세
     ├── feature-002-exchange.md  # 환전 기능 작업 명세

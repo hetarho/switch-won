@@ -15,7 +15,7 @@
   - [api-spec.md](../design/api-spec.md) - Server Actions 패턴
   - [data-models.md](../design/data-models.md) - 타입 정의
 - **BDD**: 
-  - [exchange-rates.feature](../../cypress/features/exchange/exchange-rates/latest.feature)
+  - [exchange-rates.feature](../../cypress/features/exchange/exchange-rates.feature)
   - [exchange-order.feature](../../cypress/features/exchange/exchange-order.feature)
   - [wallet.feature](../../cypress/features/exchange/wallet.feature)
 

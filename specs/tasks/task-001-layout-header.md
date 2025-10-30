@@ -8,7 +8,6 @@
 
 - **Requirements**: [01-project-overview.md](../requirements/01-project-overview.md)
 - **Design**: [architecture.md](../design/architecture.md) - FSD Widgets 레이어
-- **Design System**: [design-system.md](../design/design-system.md)
 
 ---
 

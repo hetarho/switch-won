@@ -148,8 +148,8 @@
 
 - [사용자 스토리](./02-user-stories.md)
 - [비기능 요구사항](./03-non-functional.md)
-- [API 명세](../design/api-spec.md) (Design 단계에서 작성)
-- [아키텍처 설계](../design/architecture.md) (Design 단계에서 작성)
+- [API 명세](../design/api-spec.md)
+- [아키텍처 설계](../design/architecture.md)
 
 ---
 

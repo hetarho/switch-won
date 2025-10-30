@@ -8,7 +8,6 @@
 
 - **Requirements**: [US-004](../requirements/02-user-stories.md)
 - **Design**: [architecture.md](../design/architecture.md) - FSD Pages 레이어
-- **Design System**: [design-system.md](../design/design-system.md)
 - **BDD**: [exchange-history.feature](../../cypress/features/history/exchange-history.feature)
 
 ---

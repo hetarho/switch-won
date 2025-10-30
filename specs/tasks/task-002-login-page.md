@@ -8,7 +8,6 @@
 
 - **Requirements**: [US-001](../requirements/02-user-stories.md#us-001-이메일-로그인)
 - **Design**: [architecture.md](../design/architecture.md) - FSD Pages 레이어
-- **Design System**: [design-system.md](../design/design-system.md)
 - **BDD**: [login.feature](../../cypress/features/auth/login.feature)
 
 ---

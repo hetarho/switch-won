@@ -315,8 +315,8 @@ GET /orders
 
 - [프로젝트 개요](./01-project-overview.md)
 - [비기능 요구사항](./03-non-functional.md)
-- [BDD Feature 파일](../../cypress/features/) (작성 예정)
-- [Design 명세](../design/) (Design 단계에서 작성)
+- [BDD Feature 파일](../../cypress/features/)
+- [Design 명세](../design/)
 
 ---
 

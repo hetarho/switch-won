@@ -405,7 +405,7 @@ const mutation = useMutation({
 
 - [프로젝트 개요](./01-project-overview.md)
 - [사용자 스토리](./02-user-stories.md)
-- [Design 명세](../design/) (Design 단계에서 작성)
+- [Design 명세](../design/)
 
 ---
 
