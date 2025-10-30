@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/shared/ui';
 import { formatAmount } from '@/shared/utils/format/currency';
-import { validateAmount } from '@/shared/utils';
+import { isValidAmount, parseAmount, validateAmount } from '@/shared/utils';
 
 type ExchangeRate = {
   exchangeRateId: number;
@@ -107,12 +107,15 @@ export function ExchangeOrderForm({
       }
 
       // 디바운스된 호출에서만 API 호출
-      if (debounced && parseFloat(value) > 0) {
-        onQuoteRequest({
-          fromCurrency: actualFromCurrency,
-          toCurrency,
-          forexAmount: parseFloat(value),
-        });
+      if (debounced && isValidAmount(value)) {
+        const numValue = parseAmount(value);
+        if (numValue) {
+          onQuoteRequest({
+            fromCurrency: actualFromCurrency,
+            toCurrency,
+            forexAmount: numValue,
+          });
+        }
       }
     },
     [actualFromCurrency, toCurrency, onQuoteRequest, onQuoteReset]
@@ -120,8 +123,15 @@ export function ExchangeOrderForm({
 
   // 환전 실행 핸들러
   const handleExchange = useCallback(async () => {
+    // 금액 유효성 검사
     const validation = validateAmount(amount);
     if (!validation.isValid) {
+      return;
+    }
+
+    const numAmount = parseAmount(amount);
+    if (!numAmount) {
+      toast.error('올바른 금액을 입력해주세요.');
       return;
     }
 
@@ -138,7 +148,7 @@ export function ExchangeOrderForm({
         exchangeRateId: rate.exchangeRateId,
         fromCurrency: actualFromCurrency,
         toCurrency,
-        forexAmount: parseFloat(amount),
+        forexAmount: numAmount,
       });
 
       // 성공 후 초기화
@@ -151,7 +161,7 @@ export function ExchangeOrderForm({
   }, [amount, rates, fromCurrency, actualFromCurrency, toCurrency, onExchange]);
 
   const appliedRate = useMemo(() => {
-    return quote && amount && parseFloat(amount) > 0 ? quote.appliedRate : null;
+    return quote && amount && isValidAmount(amount) ? quote.appliedRate : null;
   }, [quote, amount]);
 
   return (
@@ -271,7 +281,7 @@ export function ExchangeOrderForm({
         </label>
         <div className="bg-surface-secondary border-border-primary flex h-18 items-center justify-center rounded-xl border p-4" data-testid="quote-result">
           <div className="text-right">
-            {quote && amount && parseFloat(amount) > 0 ? (
+            {quote && amount && isValidAmount(amount) ? (
               <>
                 <span className="text-primary-600 text-3xl font-bold">
                   {formatAmount(quote.krwAmount)}
@@ -306,7 +316,7 @@ export function ExchangeOrderForm({
       <Button
         type="button"
         onClick={handleExchange}
-        disabled={!validateAmount(amount).isValid || isExchanging}
+        disabled={!isValidAmount(amount) || isExchanging}
         className="bg-surface-invert text-text-invert h-14 w-full text-lg font-semibold shadow-xl hover:opacity-90 disabled:opacity-50"
         data-testid="exchange-button"
       >
