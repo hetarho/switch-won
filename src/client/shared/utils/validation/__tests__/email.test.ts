@@ -49,31 +49,31 @@ describe('validateEmail', () => {
   it('should return invalid result with message for empty email', () => {
     const result = validateEmail('');
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('이메일을 입력해주세요.');
+    expect(result.message).toBe('이메일을 입력해주세요');
   });
 
   it('should return invalid result with message for invalid email', () => {
     const result = validateEmail('invalid');
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요.');
+    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요');
   });
 
   it('should return invalid result for email without @', () => {
     const result = validateEmail('testexample.com');
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요.');
+    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요');
   });
 
   it('should return invalid result for email without domain', () => {
     const result = validateEmail('test@');
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요.');
+    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요');
   });
 
   it('should return invalid result for email without TLD', () => {
     const result = validateEmail('test@example');
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요.');
+    expect(result.message).toBe('유효한 이메일 주소를 입력해주세요');
   });
 
   it('should handle various valid formats', () => {
@@ -84,6 +84,13 @@ describe('validateEmail', () => {
 
   it('should handle edge cases', () => {
     expect(validateEmail('test@@example.com').isValid).toBe(false);
-    expect(validateEmail(' test@example.com ').isValid).toBe(false);
+    // trim 처리로 인해 공백이 있는 이메일도 검증 가능
+    expect(validateEmail(' test@example.com ').isValid).toBe(true);
+  });
+
+  it('should trim email addresses before validation', () => {
+    expect(validateEmail('  test@example.com  ').isValid).toBe(true);
+    expect(validateEmail('  test@example.com').isValid).toBe(true);
+    expect(validateEmail('test@example.com  ').isValid).toBe(true);
   });
 });

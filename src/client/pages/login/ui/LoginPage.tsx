@@ -4,14 +4,25 @@ import { useState } from 'react';
 import { Rss } from 'lucide-react';
 import { Input, Button, Card, CardContent } from '@/shared/ui';
 import { useLoginMutation } from '@/features/login';
+import { validateEmail } from '@/shared/utils';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
+  const [validationError, setValidationError] = useState('');
   const login = useLoginMutation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login.mutate(email);
+    
+    // 클라이언트 측 유효성 검사
+    const validation = validateEmail(email);
+    if (!validation.isValid) {
+      setValidationError(validation.message || '');
+      return;
+    }
+    
+    setValidationError('');
+    login.mutate(email.trim());
   };
 
   return (
@@ -35,7 +46,7 @@ export function LoginPage() {
         {/* 폼 카드 */}
         <Card className="border-border-primary bg-surface-primary shadow-xl">
           <CardContent className="px-8 pt-8 pb-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {/* 이메일 입력 */}
               <div className="space-y-2">
                 <label
@@ -48,7 +59,10 @@ export function LoginPage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (validationError) setValidationError('');
+                  }}
                   placeholder="example@email.com"
                   data-testid="email-input"
                   disabled={login.isPending}
@@ -59,17 +73,25 @@ export function LoginPage() {
               {/* 로그인 버튼 */}
               <Button
                 type="submit"
-                disabled={login.isPending}
+                disabled={login.isPending || !email.trim()}
                 className="bg-surface-invert text-text-invert h-12 w-full text-base font-semibold shadow-lg transition-all duration-200 hover:scale-[1.02] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                 data-testid="login-button"
               >
+                {login.isPending && <span data-testid="loading-indicator" />}
                 {login.isPending ? '로그인 중...' : '로그인 하기'}
               </Button>
 
               {/* 에러 메시지 */}
+              {validationError && (
+                <p className="text-center text-sm text-red-500">
+                  {validationError}
+                </p>
+              )}
               {login.error && (
                 <p className="text-center text-sm text-red-500">
-                  {login.error.message}
+                  {login.error.message.includes('Internal') || login.error.message.includes('서버') 
+                    ? '일시적인 오류가 발생했습니다' 
+                    : login.error.message}
                 </p>
               )}
 

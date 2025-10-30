@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/shared/ui';
 import { formatAmount } from '@/shared/utils/format/currency';
+import { validateAmount } from '@/shared/utils';
 
 type ExchangeRate = {
   exchangeRateId: number;
@@ -119,7 +120,8 @@ export function ExchangeOrderForm({
 
   // 환전 실행 핸들러
   const handleExchange = useCallback(async () => {
-    if (!amount || parseFloat(amount) <= 0) {
+    const validation = validateAmount(amount);
+    if (!validation.isValid) {
       return;
     }
 
@@ -304,7 +306,7 @@ export function ExchangeOrderForm({
       <Button
         type="button"
         onClick={handleExchange}
-        disabled={!amount || parseFloat(amount) <= 0 || isExchanging}
+        disabled={!validateAmount(amount).isValid || isExchanging}
         className="bg-surface-invert text-text-invert h-14 w-full text-lg font-semibold shadow-xl hover:opacity-90 disabled:opacity-50"
         data-testid="exchange-button"
       >
